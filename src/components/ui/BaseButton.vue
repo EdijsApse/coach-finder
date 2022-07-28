@@ -4,8 +4,12 @@
   </button>
 </template>
 
-<style scoped>
-  button {
+<style>
+  a.btn {
+    display: inline-block;
+    line-height: 1.5;
+  }
+  button , .btn {
     position: relative;
     padding: var(--space-2) var(--space-4);
     font-family: var(--font-mon);
@@ -20,14 +24,14 @@
     overflow: hidden;
   }
 
-  button:after {
+  button:after, .btn:after {
     position: absolute;
     content: "";
     z-index: 1;
     background-color: #FFF;
     border-radius: 50px;
   }
-  button:hover:after {
+  button:hover:after, .btn:hover:after {
     animation: hover-animate 0.3s ease forwards;
   }
 

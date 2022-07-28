@@ -1,12 +1,13 @@
 <template>
-  <header>
-    <a href="/">
-      <img class="logo" alt="Coach finder" src="../assets/logo.png" />
-    </a>
+  <header :class="brightHeader">
+    <router-link :to="{name: 'LandingPage'}" class="logo">
+      <img v-if="brightMode" class="logo" alt="Coach finder" src="../assets/logo.png" />
+      <img v-else class="logo" alt="Coach finder" src="../assets/dark-logo.png"/>
+    </router-link>
     <nav>
       <ul>
         <li>
-          <a href="#">Coaches</a>
+          <router-link :to="{name: 'CoachListPage'}">Coaches</router-link>
         </li>
         <li>
           <a href="#">Requests</a>
@@ -16,6 +17,22 @@
   </header>
 </template>
 
+<script>
+  export default {
+    props: ['bright-mode'],
+    computed: {
+      logoSrc() {
+        return this.brightMode ? '../assets/logo.png' : '../assets/dark-logo.png';
+      },
+      brightHeader() {
+        return {
+          'bright-header': this.brightMode
+        }
+      }
+    }
+  }
+</script>
+
 <style scoped>
 header {
   position: fixed;
@@ -24,6 +41,9 @@ header {
   left: 0px;
   width: 100%;
   padding: var(--space-4) var(--space-8);
+  background-color: var(--color-bright);
+  box-shadow: 0px 0px 6px 0px var(--color-dark-grey);
+  z-index: 2;
 }
 .logo {
   display: inline-block;
@@ -42,7 +62,7 @@ li {
 }
 
 li a {
-  color: var(--color-bright);
+  color: var(--color-dark-grey);
   font-size: 1.2rem;
 }
 
@@ -51,7 +71,7 @@ li a:after {
   content: "";
   width: 0px;
   height: 2px;
-  background-color: var(--color-bright);
+  background-color: var(--color-dark-grey);
   margin: 0 auto;
   margin-top: 5px;
   transition: width 0.3s;
@@ -59,5 +79,18 @@ li a:after {
 
 li  a:hover:after {
   width: 100%;
+}
+
+.bright-header {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.bright-header li a {
+  color: var(--color-bright);
+}
+
+.bright-header li a:after {
+  background-color: var(--color-bright);
 }
 </style>

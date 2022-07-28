@@ -1,16 +1,19 @@
 <template>
-  <the-header></the-header>
-  <landing-page></landing-page>
+  <the-header :bright-mode="isLandingPage"></the-header>
+  <router-view></router-view>
 </template>
 
 <script>
 import TheHeader from "./components/TheHeader";
-import LandingPage from "./pages/LandingPage";
 
 export default {
+  computed: {
+    isLandingPage() {
+      return this.$route.name === 'LandingPage'
+    }
+  },
   components: {
-    'the-header': TheHeader,
-    'landing-page': LandingPage,
+    'the-header': TheHeader
   },
 };
 </script>
@@ -32,7 +35,8 @@ html {
 
   --color-purple: #9708cc;
   --color-cloud-blue: #43cbff;
-  --color-dark-grey: #2c3333;
+  --color-dark-grey: #0F0E0E;
+  --color-bright-grey: #bdbdbd;
   --color-bright: #fff;
 
   --shadow-medium: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -54,6 +58,11 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-mon);
 }
 
+h1 {
+  font-size: 3rem;
+  color: var(--color-dark-grey);
+}
+
 ul {
   list-style: none; 
 }
@@ -63,15 +72,31 @@ a {
   font-family: var(--font-mon);
 }
 
+p {
+  color: var(--color-dark-grey);
+  line-height: 1.3;
+}
+
 input {
   font: inherit;
   border-radius: var(--border-radius-medium);
-  border: 1px solid var(--color-dark-grey);
+  border: none;
+  box-shadow: 0 0 0 1px var(--color-bright-grey);
   border-radius: 50px;
   padding: var(--space-2) var(--space-4);
   font-size: 1.2rem;
   height: 2.5rem;
   transition: all 0.3s;
+}
+
+input:focus {
+  border: none;
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-cloud-blue);
+}
+
+.page-title {
+  margin-bottom: var(--space-8)
 }
 
 </style>
