@@ -8,17 +8,30 @@
 				<h3>{{ fullname }}</h3>
 				<p>{{ excerpt }}</p>
 				<div class="coach-actions">
-					<base-button>Contact coach</base-button>
+					<base-button @click="showMessageModal = true">Send message</base-button>
 					<base-button class="ms-4">View profile</base-button>
 				</div>
 			</div>
 		</base-card>
+		<teleport to="html">
+			<send-message-modal v-if="showMessageModal" @close-modal="showMessageModal = false"></send-message-modal>
+		</teleport>
 	</li>
 </template>
 
 <script>
+	import SendMessageModal from '../components/SendMessageModal.vue';
+
 	export default {
-		props: ['id', 'fullname', 'contact', 'excerpt']
+		props: ['id', 'fullname', 'contact', 'excerpt'],
+		components: {
+			'send-message-modal': SendMessageModal
+		},
+		data() {
+			return {
+				showMessageModal: false,
+			}
+		}
 	}
 </script>
 

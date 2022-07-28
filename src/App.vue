@@ -77,7 +77,7 @@ p {
   line-height: 1.3;
 }
 
-input {
+input, textarea {
   font: inherit;
   border-radius: var(--border-radius-medium);
   border: none;
@@ -89,7 +89,25 @@ input {
   transition: all 0.3s;
 }
 
-input:focus {
+textarea {
+  min-height: 10rem;
+  border-radius: var(--border-radius-medium);
+  resize: none;
+}
+
+.form-control {
+  margin-bottom: var(--space-6);
+}
+
+.form-control label {
+  display: block;
+  font-family: var(--font-mon);
+  font-size: 1.1rem;
+  margin-bottom: var(--space-4);
+  font-weight: var(--font-weight-light);
+}
+
+input:focus, textarea:focus {
   border: none;
   outline: none;
   box-shadow: 0 0 0 2px var(--color-cloud-blue);
