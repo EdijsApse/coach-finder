@@ -95,6 +95,14 @@ textarea {
   resize: none;
 }
 
+.mb-6 {
+  margin-bottom: var(--space-6);
+}
+
+.mb-4 {
+  margin-bottom: var(--space-4);
+}
+
 .form-control {
   margin-bottom: var(--space-6);
 }

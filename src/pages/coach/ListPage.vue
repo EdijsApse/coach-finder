@@ -16,34 +16,25 @@
         coaches: [
           {
             id: 'c1',
-            fullname: 'Test Test',
-            contact: 'test@example.com',
-            excerpt: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s'
+            name: 'Gatis',
+            title: 'WEB Developer mentor',
+            location: 'Latvia',
+            tags: ['Full Stack Developer', 'Front End developer', 'Back End Developer']
           },
           {
-            id: 'c1',
-            fullname: 'Test Test',
-            contact: 'test@example.com',
-            excerpt: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s'
+            id: 'c2',
+            name: 'Janis',
+            title: 'Football coach',
+            location: 'Finland',
+            tags: ['Football', 'Fitness']
           },
           {
-            id: 'c1',
-            fullname: 'Test Test',
-            contact: 'test@example.com',
-            excerpt: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s'
+            id: 'c3',
+            name: 'Kristaps',
+            title: 'Fitness coach',
+            location: 'Latvia',
+            tags: ['Fitness', 'Health']
           },
-          {
-            id: 'c1',
-            fullname: 'Test Test',
-            contact: 'test@example.com',
-            excerpt: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s'
-          },
-          {
-            id: 'c1',
-            fullname: 'Test Test',
-            contact: 'test@example.com',
-            excerpt: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s'
-          }
         ]
       }
     },

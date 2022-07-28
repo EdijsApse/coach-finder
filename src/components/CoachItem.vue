@@ -2,15 +2,15 @@
 	<li class="mb-6">
 		<base-card class="coach-item">
 			<div class="coach-img">
-				<img src="../assets/temp-img.jpg" :alt="fullname" />
+				<img src="../assets/temp-img.jpg" :alt="title" />
 			</div>
 			<div class="coach-details">
-				<h3>{{ fullname }}</h3>
-				<p>{{ excerpt }}</p>
-				<div class="coach-actions">
-					<base-button @click="showMessageModal = true">Send message</base-button>
-					<base-button class="ms-4">View profile</base-button>
+				<h3>{{ name }} | <b>{{ title }}</b></h3>
+				<div class="tags">
+					<base-tag v-for="(tag, index) in tags" :key="index">{{ tag }}</base-tag>
 				</div>
+				<base-badge class="mb-4" :icon-classes="'fa-solid fa-location-dot'">{{ location }}</base-badge>
+				<base-button @click="showMessageModal = true">Send message</base-button>
 			</div>
 		</base-card>
 		<teleport to="html">
@@ -23,7 +23,7 @@
 	import SendMessageModal from '../components/SendMessageModal.vue';
 
 	export default {
-		props: ['id', 'fullname', 'contact', 'excerpt'],
+		props: ['id', 'name', 'title', 'location', 'tags'],
 		components: {
 			'send-message-modal': SendMessageModal
 		},
@@ -35,7 +35,7 @@
 	}
 </script>
 
-<style>
+<style scoped>
 	.coach-item {
 		display: flex;
 	}
@@ -53,14 +53,12 @@
 	}
 
 	.coach-details h3 {
-		font-size: 1.5rem;
+		font-size: 1.2rem;
 		margin-bottom: var(--space-2);
 	}
 
-	.coach-details p {
-		font-size: 1.1rem;
-		font-weight: var(--font-weight-light);
-		margin-bottom: var(--space-2);
+	.coach-details h3 b {
+		font-weight: var(--font-weight-bold);
 	}
 
 	.coach-details .coach-actions {
@@ -71,8 +69,9 @@
 	.coach-details .coach-actions .ms-4 {
 		margin-left: var(--space-4);
 	}
-
-	.mb-6 {
-		margin-bottom: var(--space-6);
+	
+	.tags {
+		display: flex;
+		margin: var(--space-4) -0.25rem;
 	}
 </style>
