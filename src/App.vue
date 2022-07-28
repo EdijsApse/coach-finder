@@ -19,7 +19,7 @@ export default {
 </script>
 
 <style>
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Roboto:wght@300;400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap");
 
 * {
   box-sizing: border-box;
@@ -27,7 +27,6 @@ export default {
 
 html {
   --font-mon: "Montserrat", sans-serif;
-  --font-rob: "Roboto", sans-serif;
 
   --font-weight-light: 300;
   --font-weight-normal: 400;
@@ -51,7 +50,7 @@ html {
 }
 
 body {
-  font-family: var(--font-rob);
+  font-family: var(--font-mon);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -78,7 +77,7 @@ p {
 }
 
 input, textarea {
-  font: inherit;
+  font-family: var(--font-mon);
   border-radius: var(--border-radius-medium);
   border: none;
   box-shadow: 0 0 0 1px var(--color-bright-grey);
@@ -101,6 +100,10 @@ textarea {
 
 .mb-4 {
   margin-bottom: var(--space-4);
+}
+
+.mt-8 {
+  margin-top: var(--space-8);
 }
 
 .form-control {

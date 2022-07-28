@@ -5,7 +5,9 @@
 				<img src="../assets/temp-img.jpg" :alt="title" />
 			</div>
 			<div class="coach-details">
-				<h3>{{ name }} | <b>{{ title }}</b></h3>
+				<router-link :to="{ name: 'CoachViewPage', params: { coachId: id }}" class="coach-link">
+					<h3>{{ name }} | <b>{{ title }}</b></h3>
+				</router-link>
 				<div class="tags">
 					<base-tag v-for="(tag, index) in tags" :key="index">{{ tag }}</base-tag>
 				</div>
@@ -36,6 +38,15 @@
 </script>
 
 <style scoped>
+	.coach-link {
+		color: var(--color-dark-gray);
+		transition: color 0.3s;
+	}
+
+	.coach-link:hover {
+		color: var(--color-cloud-blue);
+	}
+
 	.coach-item {
 		display: flex;
 	}

@@ -1,5 +1,5 @@
 <template>
-  <div class="modal">
+  <dialog open class="modal">
 		<base-card class="modal-body" :class="mode" @click.stop>
 			<div class="modal-header">
 				<slot name="header"></slot>
@@ -8,7 +8,7 @@
 				<slot></slot>
 			</div>
 		</base-card>
-	</div>
+	</dialog>
 </template>
 
 <script>
@@ -25,6 +25,9 @@
 </script>
 
 <style>
+  dialog {
+    border: none;
+  }
 	.modal {
 		background-color: rgba(0,0,0, 0.5);
 		position: fixed;
