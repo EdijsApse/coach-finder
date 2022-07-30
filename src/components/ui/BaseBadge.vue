@@ -16,7 +16,7 @@
 <style scoped>
   i {
 		font-size: 1.1rem;
-		margin-right: var(--space-4);
+		margin-right: var(--space-2);
 	}
   span {
 		font-family: var(--font-mon);

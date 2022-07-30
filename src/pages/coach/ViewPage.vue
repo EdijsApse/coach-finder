@@ -80,8 +80,9 @@
   .details .tags {
     display: flex;
     justify-content: center;
-    margin: var(--space-8) -1rem;
+    margin: var(--space-8) 0;
     margin-bottom: 0;
+    gap: 0 var(--space-2);
   }
 
   h2 {

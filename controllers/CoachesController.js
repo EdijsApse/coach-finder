@@ -1,10 +1,6 @@
-const database = require("../database/connection");
-
-async function index(req, res) {
-  const coaches = await database.getDb().collection("coaches").find().toArray();
-  
+function index(req, res) {  
   res.json({
-    data: coaches,
+    data: []
   });
 }
 

@@ -26,6 +26,7 @@
             name: 'Gatis',
             title: 'WEB Developer mentor',
             location: 'Latvia',
+            price: '10 EUR/h',
             tags: ['Full Stack Developer', 'Front End developer', 'Back End Developer']
           },
           {
@@ -33,6 +34,7 @@
             name: 'Janis',
             title: 'Football coach',
             location: 'Finland',
+            price: '10 EUR/h',
             tags: ['Football', 'Fitness']
           },
           {
@@ -40,6 +42,7 @@
             name: 'Kristaps',
             title: 'Fitness coach',
             location: 'Latvia',
+            price: '10 EUR/h',
             tags: ['Fitness', 'Health']
           },
         ]

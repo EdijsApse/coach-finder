@@ -11,7 +11,10 @@
 				<div class="tags">
 					<base-tag v-for="(tag, index) in tags" :key="index">{{ tag }}</base-tag>
 				</div>
-				<base-badge class="mb-4" :icon-classes="'fa-solid fa-location-dot'">{{ location }}</base-badge>
+				<div class="badges">
+					<base-badge class="mb-4" :icon-classes="'fa-solid fa-location-dot'">{{ location }}</base-badge>
+					<base-badge class="mb-4" :icon-classes="'fa-solid fa-coins'">{{ price }}</base-badge>
+				</div>
 				<base-button @click="showMessageModal = true">Send message</base-button>
 			</div>
 		</base-card>
@@ -25,7 +28,7 @@
 	import SendMessageModal from '../components/SendMessageModal.vue';
 
 	export default {
-		props: ['id', 'name', 'title', 'location', 'tags'],
+		props: ['id', 'name', 'title', 'location', 'tags', 'price'],
 		components: {
 			'send-message-modal': SendMessageModal
 		},
@@ -83,6 +86,12 @@
 	
 	.tags {
 		display: flex;
-		margin: var(--space-4) -0.25rem;
+		gap: 0 var(--space-2);
+		margin: var(--space-4) 0;
+	}
+
+	.badges {
+		display: flex;
+		gap: 0 var(--space-8);
 	}
 </style>
