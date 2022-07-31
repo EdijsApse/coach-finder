@@ -1,12 +1,19 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const coachRoutes = require('./coachRoutes');
+const coachRoutes = require("./coachRoutes");
+const userRoutes = require("./userRoutes");
+const authRoutes = require("./authRoutes");
+const { setHeaderMiddleware, tokenValidationMiddleware } = require("../../middlewares");
 
-router.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  next();
-});
+router.use(setHeaderMiddleware);
 
-router.use('/coaches', coachRoutes);
+router.use("/coaches", coachRoutes);
+router.use("/", authRoutes);
 
-module.exports = router
+router.use(
+  "/user",
+  tokenValidationMiddleware,
+  userRoutes
+);
+
+module.exports = router;
