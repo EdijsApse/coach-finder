@@ -37,7 +37,10 @@ async function login(req, res, next) {
                 email: user.email,
               },
             },
-            process.env.SECRET_STRING_FOR_TOKEN_GEN
+            process.env.SECRET_STRING_FOR_TOKEN_GEN,
+            {
+              expiresIn: '1y'
+            },
           );
 
           return res.json({ user: user, token: token });
