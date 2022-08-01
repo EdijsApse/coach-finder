@@ -5,12 +5,20 @@
       <img v-else class="logo" alt="Coach finder" src="../assets/dark-logo.png"/>
     </router-link>
     <nav>
-      <ul>
+      <ul class="ms-8">
         <li>
           <router-link :to="{name: 'CoachListPage'}">Coaches</router-link>
         </li>
         <li>
           <a href="#">Requests</a>
+        </li>
+      </ul>
+      <ul>
+        <li>
+          <router-link :to="{name: 'LoginPage'}">Login</router-link>
+        </li>
+        <li>
+          <router-link :to="{name: 'RegisterPage'}">Register</router-link>
         </li>
       </ul>
     </nav>
@@ -51,7 +59,7 @@ header {
 }
 nav {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
 }

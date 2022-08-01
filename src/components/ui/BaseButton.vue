@@ -19,9 +19,15 @@
     border: none;
     display: block;
     font-size: 1rem;
+    line-height: 1.5;
     height: 2.5rem;
     cursor: pointer;
     overflow: hidden;
+  }
+
+  .btn-alternative {
+    background-color: var(--color-bright-grey);
+    color: var(--color-bright);
   }
 
   button:after, .btn:after {

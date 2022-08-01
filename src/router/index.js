@@ -4,6 +4,8 @@ import LandingPage from '../pages/LandingPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import CoachListPage from '../pages/coach/ListPage';
 import CoachViewPage from '../pages/coach/ViewPage';
+import LoginPage from '../pages/auth/LoginPage';
+import RegisterPage from '../pages/auth/RegisterPage';
 
 const router = createRouter({
 	history: createWebHistory(),
@@ -23,6 +25,16 @@ const router = createRouter({
 			component: CoachViewPage,
 			path: '/coaches/:coachId',
 			props: true
+		},
+		{
+			name: 'LoginPage',
+			component: LoginPage,
+			path: '/login'
+		},
+		{
+			name: 'RegisterPage',
+			component: RegisterPage,
+			path: '/register'
 		},
 		{
 			name: 'NotFoundPage',
