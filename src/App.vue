@@ -1,12 +1,14 @@
 <template>
+  <the-alert v-if="alertMessage" :message="alertMessage" :success="alertIsSuccess"></the-alert>
   <the-header :bright-mode="isLandingPage"></the-header>
   <router-view></router-view>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import axios from "./axios";
 import TheHeader from "./components/TheHeader";
+import TheAlert from "./components/TheAlert";
 
 export default {
   data() {
@@ -15,12 +17,14 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['alertIsSuccess', 'alertMessage']),
     isLandingPage() {
       return this.$route.name === 'LandingPage'
     }
   },
   components: {
-    'the-header': TheHeader
+    'the-header': TheHeader,
+    'the-alert': TheAlert
   },
   methods: {
     ...mapActions(['logout', 'refreshUser']),

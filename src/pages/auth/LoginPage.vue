@@ -2,19 +2,21 @@
   <base-container class="mt-header-height page auth-page">
     <base-card class="max-90">
       <h1 class="page-title">Login</h1>
-      <form @submit.prevent="login">
-        <div class="form-control">
-          <label for="email">Email address</label>
-          <input type="email" id="email" />
-        </div>
-        <div class="form-control">
-          <label for="password">Password</label>
-          <input type="password" id="password" />
-        </div>
+      <form @submit.prevent="loginUser">
+        
+        <base-form-control :errors="errors" field="email" id="email" label="Email address">
+          <input type="email" id="email" v-model="email" />
+        </base-form-control>
+
+        <base-form-control :errors="errors" field="password" id="password" label="Password">
+          <input type="password" id="password" v-model="password" />
+        </base-form-control>
+
         <div class="form-actions">
           <base-button type="submit">Login</base-button>
           <router-link :to="{name: 'RegisterPage'}" class="btn btn-alternative">Create account</router-link>
         </div>
+
       </form>
       <div class="auth-alternative">
         <span></span>
@@ -42,6 +44,53 @@
     </base-card>
   </base-container>
 </template>
+
+<script>
+  import { mapActions } from 'vuex';
+  import axios from '../../axios';
+
+  export default {
+    data() {
+      return {
+        loading: false,
+        errors: [],
+        email: '',
+        password: ''
+      }
+    },
+    methods: {
+      ...mapActions(['login', 'addErrorMessage']),
+      loginUser() {
+        const credentials = {
+          email: this.email,
+          password: this.password
+        };
+
+        this.errors = [];
+        
+        axios.post('/login', credentials)
+        .then((response) => {
+          const { success, errors, user, token, message } = response.data;
+
+          if (success === false && errors) {
+            this.errors = errors;
+          } else if (success === true) {
+            this.login({user, token});
+          } else if (message) {
+            this.addErrorMessage(message)
+          }
+
+        })
+        .catch(err => {
+          console.log(err)
+        })
+        .finally(() => {
+          this.loading = false;
+        })
+      }
+    }
+  }
+</script>
 
 <style>
 .page-title {

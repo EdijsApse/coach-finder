@@ -1,8 +1,16 @@
 const User = require('../models/User');
-const { UserSchema } = require('../joi-schemas');
+const { UserSchema, CredentialsSchema } = require('../joi-schemas');
 
 function validateUser(req, res, next) {
-  const { error } = UserSchema.validateAsync(req.body, { abortEarly: false });
+  return validator(req, res, next, UserSchema);
+}
+
+function validateCredentials(req, res, next) {
+  return validator(req, res, next, CredentialsSchema);
+}
+
+function validator(req, res, next, Schema) {
+  const { error } = Schema.validate(req.body, { abortEarly: false });
 
   if (error) {
     const errors = prepareErrors(error.details);
@@ -49,5 +57,6 @@ function prepareErrors(joiErrorDetails) {
 
 module.exports = {
   validateUser: validateUser,
-  isUniqueEmail: isUniqueEmail
+  isUniqueEmail: isUniqueEmail,
+  validateCredentials: validateCredentials
 }

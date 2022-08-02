@@ -25,13 +25,16 @@
         <li>
           <a href="/profile">Profile</a>
         </li>
+        <li>
+          <base-button @click="logoutUser">Logout</base-button>
+        </li>
       </ul>
     </nav>
   </header>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
   export default {
     props: ['bright-mode'],
@@ -44,6 +47,13 @@ import { mapGetters } from 'vuex';
         return {
           'bright-header': this.brightMode
         }
+      }
+    },
+    methods: {
+      ...mapActions(['logout']),
+      logoutUser() {
+        this.logout();
+        window.location = '/';
       }
     }
   }

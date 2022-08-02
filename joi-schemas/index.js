@@ -8,4 +8,10 @@ const UserSchema = Joi.object({
   confirm_password: Joi.string().required().valid(Joi.ref('password'))
 })
 
+const CredentialsSchema = Joi.object({
+  password: Joi.string().required(),
+  email: Joi.string().required().email(),
+})
+
 module.exports.UserSchema = UserSchema;
+module.exports.CredentialsSchema = CredentialsSchema;

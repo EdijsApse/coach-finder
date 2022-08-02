@@ -43,7 +43,7 @@ async function login(req, res, next) {
             },
           );
 
-          return res.json({ user: user.getApiData(), token: token });
+          return res.json({ success: true, user: user.getApiData(), token: token });
         });
       } catch (error) {
         return next(new UnhandledError("Something went wrong!", error));
