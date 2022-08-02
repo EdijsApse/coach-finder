@@ -4,9 +4,16 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+import axios from "./axios";
 import TheHeader from "./components/TheHeader";
 
 export default {
+  data() {
+    return {
+      loading: false
+    }
+  },
   computed: {
     isLandingPage() {
       return this.$route.name === 'LandingPage'
@@ -15,6 +22,27 @@ export default {
   components: {
     'the-header': TheHeader
   },
+  methods: {
+    ...mapActions(['logout', 'refreshUser']),
+    setupApp() {
+      const token = localStorage.getItem('token');
+      if (token) {
+        axios.get('/refresh-user').then(response => {
+          const { success, user } = response.data;
+          if (success === true) {
+            this.refreshUser(user);
+          }
+        }).catch(() => {
+          this.logout();
+        }).finally(() => {
+          this.loading = false;
+        })
+      }
+    }
+  },
+  mounted() {
+    this.setupApp();
+  }
 };
 </script>
 
@@ -37,6 +65,7 @@ html {
   --color-dark-grey: #0F0E0E;
   --color-bright-grey: #bdbdbd;
   --color-bright: #fff;
+  --color-danger: #dc3545;
 
   --shadow-medium: 0 2px 8px rgba(0, 0, 0, 0.2);
 
@@ -110,22 +139,14 @@ textarea {
   margin-left: var(--space-8);
 }
 
-.form-control {
-  margin-bottom: var(--space-6);
-}
-
-.form-control label {
-  display: block;
-  font-family: var(--font-mon);
-  font-size: 1.1rem;
-  margin-bottom: var(--space-4);
-  font-weight: var(--font-weight-light);
-}
-
-input:focus, textarea:focus {
+input:focus, textarea:focus, .has-error input:focus, .has-error textarea:focus {
   border: none;
   outline: none;
   box-shadow: 0 0 0 2px var(--color-cloud-blue);
+}
+
+.has-error input, .has-error textarea {
+  box-shadow: 0 0 0 1px var(--color-danger);
 }
 
 .page-title {

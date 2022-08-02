@@ -13,7 +13,7 @@
           <a href="#">Requests</a>
         </li>
       </ul>
-      <ul>
+      <ul v-if="!isAuth">
         <li>
           <router-link :to="{name: 'LoginPage'}">Login</router-link>
         </li>
@@ -21,14 +21,22 @@
           <router-link :to="{name: 'RegisterPage'}">Register</router-link>
         </li>
       </ul>
+      <ul v-else>
+        <li>
+          <a href="/profile">Profile</a>
+        </li>
+      </ul>
     </nav>
   </header>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
   export default {
     props: ['bright-mode'],
     computed: {
+      ...mapGetters(['user', 'isAuth']),
       logoSrc() {
         return this.brightMode ? '../assets/logo.png' : '../assets/dark-logo.png';
       },

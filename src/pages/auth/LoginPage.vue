@@ -25,9 +25,9 @@
         <span class="auth-icon">
           <i class="fa-brands fa-facebook-f"></i>
         </span>
-        <sapn class="auth-icon">
+        <span class="auth-icon">
           <i class="fa-brands fa-google"></i>
-        </sapn>
+        </span>
         <span class="auth-icon">
           <i class="fa-brands fa-linkedin-in"></i>
         </span>

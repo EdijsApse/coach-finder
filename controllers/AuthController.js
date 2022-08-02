@@ -43,7 +43,7 @@ async function login(req, res, next) {
             },
           );
 
-          return res.json({ user: user, token: token });
+          return res.json({ user: user.getApiData(), token: token });
         });
       } catch (error) {
         return next(new UnhandledError("Something went wrong!", error));
@@ -63,7 +63,15 @@ function register(req, res, next) {
   )(req, res, next);
 }
 
+function refreshUser(req, res) {
+  res.json({
+    success: true,
+    user: req.user
+  })
+}
+
 module.exports = {
   login: login,
   register: register,
+  refreshUser: refreshUser
 };
