@@ -1,5 +1,7 @@
 <template>
-  <the-alert v-if="alertMessage" :message="alertMessage" :success="alertIsSuccess"></the-alert>
+  <transition name="pop-in">
+    <the-alert v-if="alertMessage" :message="alertMessage" :success="alertIsSuccess"></the-alert>
+  </transition>
   <the-header :bright-mode="isLandingPage"></the-header>
   <router-view></router-view>
 </template>
@@ -153,8 +155,48 @@ input:focus, textarea:focus, .has-error input:focus, .has-error textarea:focus {
   box-shadow: 0 0 0 1px var(--color-danger);
 }
 
+.relative {
+  position: relative;
+}
+
 .page-title {
   margin-bottom: var(--space-8)
+}
+
+.fade-in-enter-active {
+  animation: fade-in 0.3s;
+}
+
+.fade-in-leave-active {
+  animation: fade-in 0.3s reverse;
+}
+
+.pop-in-enter-active {
+  animation: pop-in 0.2s;
+}
+
+.pop-in-leave-active {
+  animation: pop-in 0.1s reverse;
+}
+
+@keyframes pop-in {
+  from {
+    transform: scale(0.5);
+    opacity: 0.5
+  }
+  to {
+    transform: scale(1);
+    opacity: 1
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 </style>

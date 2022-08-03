@@ -25,7 +25,7 @@ app.use(defaultErrorHandler);
 
 mongoose.connect(process.env.DB_URL)
 .then(() => {
-	app.listen(3000);
+	app.listen(3001);
 })
 .catch(err => {
 	console.log('Connection to DB not established!')

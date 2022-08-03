@@ -2,7 +2,7 @@
   <base-card class="alert">
     <div class="alert-header">
       <h6>{{ alertTitle }}</h6>
-      <i class="fa-solid fa-circle-xmark close-icon" @click="clearAlertMessage()"></i>
+      <i class="fa-solid fa-circle-xmark close-icon" @click="close"></i>
     </div>
     <div class="alert-body">
       <p>{{ message }}</p>
@@ -15,14 +15,30 @@ import { mapActions } from 'vuex';
 
   export default {
     props: ['message', 'success'],
+    data() {
+      return {
+        interval: null
+      }
+    },
+    mounted() {
+      this.interval = setInterval(() => {
+        this.clearAlertMessage();
+      }, 5000);
+    },
+    unmounted() {
+      clearInterval(this.interval);
+    },
     computed: {
       alertTitle() {
-        console.log(this.success)
         return this.success === true ? 'Action successfull' : 'Error occured';
       }
     },
     methods: {
-      ...mapActions(['clearAlertMessage'])
+      ...mapActions(['clearAlertMessage']),
+      close() {
+        clearInterval(this.interval);
+        this.clearAlertMessage();
+      }
     }
   }
 </script>
@@ -53,5 +69,10 @@ import { mapActions } from 'vuex';
     font-size: 1.5rem;
     color: var(--color-cloud-blue);
     cursor: pointer;
+    opacity: 0.8;
+    transition: all 0.3s;
+  }
+  .close-icon:hover {
+    opacity: 1;
   }
 </style>

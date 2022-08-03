@@ -1,6 +1,11 @@
 <template>
   <base-container class="mt-header-height page auth-page">
-    <base-card class="max-90">
+    <base-card class="max-90 relative">
+      
+      <transition name="fade-in">
+        <base-loader v-if="loading"></base-loader>
+      </transition>
+
       <h1 class="page-title">Create account</h1>
       <form @submit.prevent="register">
         
@@ -69,7 +74,7 @@
       }
     },
     methods: {
-      ...mapActions(['login']),
+      ...mapActions(['login', 'addSuccessMessage']),
       register() {
         const user = {
           name: this.name,
@@ -87,6 +92,8 @@
             this.errors = errors;
           } else {
             this.login({user, token});
+            this.$router.push({name: 'CoachListPage'});
+            this.addSuccessMessage('Welcome to CoachFinder platform. Find your coach or become one!')
           }
         }).catch(err => {
           console.log(err);

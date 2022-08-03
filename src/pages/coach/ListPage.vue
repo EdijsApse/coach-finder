@@ -64,5 +64,6 @@
     font-size: 0.8rem;
     padding: var(--space-2) var(--space-4);
     height: 2rem;
+    line-height: 1;
   }
 </style>

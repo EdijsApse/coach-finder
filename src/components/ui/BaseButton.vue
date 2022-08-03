@@ -17,6 +17,7 @@
     background-color: var(--color-cloud-blue);
     border-radius: 50px;
     border: none;
+    outline: none;
     display: block;
     font-size: 1rem;
     line-height: 1.5;

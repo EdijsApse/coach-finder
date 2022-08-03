@@ -1,6 +1,9 @@
 <template>
   <base-container class="mt-header-height page auth-page">
-    <base-card class="max-90">
+    <base-card class="max-90 relative">
+      <transition name="fade-in">
+        <base-loader v-if="loading"></base-loader>
+      </transition>
       <h1 class="page-title">Login</h1>
       <form @submit.prevent="loginUser">
         
@@ -59,13 +62,14 @@
       }
     },
     methods: {
-      ...mapActions(['login', 'addErrorMessage']),
+      ...mapActions(['login', 'addErrorMessage', 'addSuccessMessage']),
       loginUser() {
         const credentials = {
           email: this.email,
           password: this.password
         };
 
+        this.loading = true;
         this.errors = [];
         
         axios.post('/login', credentials)
@@ -76,6 +80,8 @@
             this.errors = errors;
           } else if (success === true) {
             this.login({user, token});
+            this.addSuccessMessage('Welcome to CoachFinder website!');
+            this.$router.push({name: 'CoachListPage'});
           } else if (message) {
             this.addErrorMessage(message)
           }
