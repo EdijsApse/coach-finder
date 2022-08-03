@@ -11,6 +11,7 @@
     <ul>
       <coach-item v-for="coach in coaches" :key="coach.id" v-bind="coach"></coach-item>
     </ul>
+    <router-link :to="{name: 'CoachCreatePage'}" class="btn fixed-bottom">Become a coach</router-link>
   </base-container>
 </template>
 
@@ -65,5 +66,11 @@
     padding: var(--space-2) var(--space-4);
     height: 2rem;
     line-height: 1;
+  }
+  .fixed-bottom {
+    position: fixed;
+    bottom: var(--space-8);
+    right: var(--space-8);
+    z-index: 2;
   }
 </style>

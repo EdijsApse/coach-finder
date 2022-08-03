@@ -127,6 +127,7 @@ p {
 }
 
 input, textarea {
+  width: 100%;
   font-family: var(--font-mon);
   border-radius: var(--border-radius-medium);
   border: none;
