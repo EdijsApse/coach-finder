@@ -2,16 +2,21 @@
   <transition name="pop-in">
     <the-alert v-if="alertMessage" :message="alertMessage" :success="alertIsSuccess"></the-alert>
   </transition>
-  <the-header :bright-mode="isLandingPage"></the-header>
-  <router-view></router-view>
+  
+  <div v-if="loading">Loading app</div>
+  
+  <div v-else>
+    <the-header :bright-mode="isLandingPage"></the-header>
+    <router-view></router-view>
+  </div>
+
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
-import axios from "./axios";
+import { mapGetters, mapActions } from "vuex";
 import TheHeader from "./components/TheHeader";
 import TheAlert from "./components/TheAlert";
-
+import axios from './axios';
 export default {
   data() {
     return {
@@ -19,7 +24,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['alertIsSuccess', 'alertMessage']),
+    ...mapGetters(['alertIsSuccess', 'alertMessage', 'isAuth', 'user']),
     isLandingPage() {
       return this.$route.name === 'LandingPage'
     }
@@ -33,6 +38,8 @@ export default {
     setupApp() {
       const token = localStorage.getItem('token');
       if (token) {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        this.loading = true;
         axios.get('/refresh-user').then(response => {
           const { success, user } = response.data;
           if (success === true) {
@@ -41,12 +48,20 @@ export default {
         }).catch(() => {
           this.logout();
         }).finally(() => {
+          this.runRouterMiddleware();
           this.loading = false;
         })
       }
+    },
+    runRouterMiddleware() {
+      const { requiresGuest } = this.$route.meta;
+
+      if (requiresGuest === true && this.isAuth === true) {
+        this.$router.push('/');
+      }
     }
   },
-  mounted() {
+  created() {
     this.setupApp();
   }
 };

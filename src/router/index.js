@@ -7,6 +7,8 @@ import CoachViewPage from '../pages/coach/ViewPage';
 import LoginPage from '../pages/auth/LoginPage';
 import RegisterPage from '../pages/auth/RegisterPage';
 
+import store from '../store';
+
 const router = createRouter({
 	history: createWebHistory(),
 	routes: [
@@ -29,12 +31,18 @@ const router = createRouter({
 		{
 			name: 'LoginPage',
 			component: LoginPage,
-			path: '/login'
+			path: '/login',
+			meta: {
+				requiresGuest: true
+			}
 		},
 		{
 			name: 'RegisterPage',
 			component: RegisterPage,
-			path: '/register'
+			path: '/register',
+			meta: {
+				requiresGuest: true
+			}
 		},
 		{
 			name: 'NotFoundPage',
@@ -42,6 +50,18 @@ const router = createRouter({
 			path: '/:path(.*)'
 		}
 	]
+})
+
+router.beforeEach((to) => {
+	const { requiresGuest } = to.meta;
+
+	const isAuth = store.getters.isAuth;
+
+	if (requiresGuest === true && isAuth === true) {
+		return false
+	}
+
+	return true;
 })
 
 export default router;
