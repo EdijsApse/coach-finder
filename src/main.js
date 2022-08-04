@@ -12,6 +12,7 @@ import BaseBadge from './components/ui/BaseBadge.vue';
 import BaseError from './components/ui/BaseError.vue';
 import BaseFormControl from './components/ui/BaseFormControl.vue';
 import BaseLoader from './components/ui/BaseLoader.vue';
+import BasePagination from './components/ui/BasePagination.vue';
 
 const app = createApp(App);
 
@@ -27,5 +28,6 @@ app.component('base-badge', BaseBadge);
 app.component('base-error', BaseError);
 app.component('base-form-control', BaseFormControl);
 app.component('base-loader', BaseLoader);
+app.component('base-pagination', BasePagination);
 
 app.mount('#app')

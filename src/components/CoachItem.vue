@@ -2,19 +2,20 @@
 	<li class="mb-6">
 		<base-card class="coach-item">
 			<div class="coach-img">
-				<img src="../assets/temp-img.jpg" :alt="title" />
+				<img src="../assets/temp-img.jpg" :alt="coach.jobtitle" />
 			</div>
 			<div class="coach-details">
-				<router-link :to="{ name: 'CoachViewPage', params: { coachId: id }}" class="coach-link">
-					<h3>{{ name }} | <b>{{ title }}</b></h3>
+				<router-link :to="{ name: 'CoachViewPage', params: { coachId: coach.id }}" class="coach-link">
+					<h3>{{ coach.user.name }} | <b>{{ coach.jobtitle }}</b></h3>
 				</router-link>
 				<div class="tags">
-					<base-tag v-for="(tag, index) in tags" :key="index">{{ tag }}</base-tag>
+					<base-tag v-for="(field, index) in coach.fields" :key="index">{{ field }}</base-tag>
 				</div>
 				<div class="badges">
-					<base-badge class="mb-4" :icon-classes="'fa-solid fa-location-dot'">{{ location }}</base-badge>
-					<base-badge class="mb-4" :icon-classes="'fa-solid fa-coins'">{{ price }}</base-badge>
-				</div>
+						<base-badge class="mb-4 single-badge" :icon-classes="'fa-solid fa-location-dot'">Provides coaching in: <b>{{ coach.location }}</b></base-badge>
+						<base-badge class="mb-4 single-badge" :icon-classes="'fa-solid fa-coins'">Asking price: <b>{{ coach.price }} EUR / Hour</b></base-badge>
+						<base-badge class="single-badge" :icon-classes="'fa-solid fa-calendar-day'">Member Since: <b>{{ coach.member_since }}</b></base-badge>
+					</div>
 				<base-button @click="showMessageModal = true">Send message</base-button>
 			</div>
 		</base-card>
@@ -28,7 +29,7 @@
 	import SendMessageModal from '../components/SendMessageModal.vue';
 
 	export default {
-		props: ['id', 'name', 'title', 'location', 'tags', 'price'],
+		props: ['coach'],
 		components: {
 			'send-message-modal': SendMessageModal
 		},

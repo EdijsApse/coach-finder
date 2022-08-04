@@ -167,6 +167,11 @@ textarea {
   margin-left: var(--space-8);
 }
 
+.my-6 {
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
 input:focus, textarea:focus, .has-error input:focus, .has-error textarea:focus {
   border: none;
   outline: none;

@@ -21,7 +21,14 @@ const router = createRouter({
 		{
 			name: 'CoachListPage',
 			component: CoachListPage,
-			path: '/coaches'
+			path: '/coaches',
+			props: true
+		},
+		{
+			name: 'CoachQueryListPage',
+			component: CoachListPage,
+			path: '/coaches/q-:q',
+			props: true
 		},
 		{
 			name: 'CoachCreatePage',
@@ -58,7 +65,10 @@ const router = createRouter({
 			component: NotFoundPage,
 			path: '/:path(.*)'
 		}
-	]
+	],
+	scrollBehavior() {
+		return { top: 0, behavior: 'smooth' }
+	}
 })
 
 router.beforeEach((to) => {

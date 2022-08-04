@@ -4,12 +4,31 @@
       <h1>Find your coach with <b>CoachFinder</b></h1>
       <p>We have more than <span class="number">100</span> coaches<br/>registered in <span class="number">25</span> different fields!</p>
       <form>
-        <input type="text" />
-        <base-button>Find coach</base-button>
+        <input type="text" v-model.trim="q" />
+        <base-button @click="findCoach">Find coach</base-button>
       </form>
     </section>
   </base-container>
 </template>
+
+<script>
+  export default {
+    data() {
+      return {
+        q: ''
+      }
+    },
+    methods: {
+      findCoach() {
+        if (this.q) {
+          this.$router.push({ name: 'CoachQueryListPage', params: { q: this.q } })
+        } else {
+          this.$router.push({ name: 'CoachListPage' })
+        }
+      }
+    }
+  }
+</script>
 
 <style scoped>
   .landing-container {
@@ -58,6 +77,7 @@
   .landing-intro input {
     margin-top: var(--space-2);
     margin-bottom: var(--space-4);
+    max-width: 20rem;
   }
 
   .landing-intro button {
