@@ -26,7 +26,10 @@ const router = createRouter({
 		{
 			name: 'CoachCreatePage',
 			component: CoachCreatePage,
-			path: '/coaches/create'
+			path: '/coaches/create',
+			meta: {
+				requiresAuth: true
+			}
 		},
 		{
 			name: 'CoachViewPage',
@@ -59,11 +62,15 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-	const { requiresGuest } = to.meta;
+	const { requiresGuest, requiresAuth } = to.meta;
 
 	const isAuth = store.getters.isAuth;
 
 	if (requiresGuest === true && isAuth === true) {
+		return false
+	}
+
+	if (requiresAuth === true && isAuth !== true) {
 		return false
 	}
 

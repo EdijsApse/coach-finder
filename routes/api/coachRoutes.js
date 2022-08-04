@@ -8,4 +8,6 @@ router.get("/", controller.index);
 
 router.post("/new", tokenValidationMiddleware, validateCoach, controller.create);
 
+router.get("/:id", controller.show);
+
 module.exports = router;

@@ -34,11 +34,29 @@ async function create(req, res, next) {
   } catch (err) {
     next(new UnhandledError('Coach not created!', err));
   }
+}
 
-
+async function show(req, res, next) {
+  try {
+    const coach = await Coach.findById(req.params.id);
+      if (coach) {
+        res.json({
+          success: true,
+          coach: coach.getApiData()
+        })
+      } else {
+        res.json({
+          success: false,
+          message: 'Coach not found by given ID'
+        })
+      }
+  } catch(err) {
+    next(new UnhandledError('Couldnt find coach by this id!', err));
+  }
 }
 
 module.exports = {
   index: index,
-  create: create
+  create: create,
+  show: show
 }

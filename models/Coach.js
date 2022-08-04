@@ -51,4 +51,21 @@ coachSchema.pre('save', function() {
   this.price = this.price.toFixed(2)
 });
 
+coachSchema.virtual('member_since').get(function() {
+  return this.created_at.toLocaleString('en-EN', { year: 'numeric', month: 'long', day: 'numeric' })
+});
+
+coachSchema.methods.getApiData = function() {
+  return {
+    jobtitle: this.jobtitle,
+    price: this.price,
+    fields: this.fields,
+    location: this.location,
+    about: this.about,
+    user: this.user,
+    created_at: this.created_at,
+    member_since: this.member_since
+  }
+}
+
 module.exports = mongoose.model('Coach', coachSchema);

@@ -12,5 +12,6 @@
 		border-radius: 50px;
 		background-color: var(--color-purple);
 		font-family: var(--font-mon);
+		text-transform: capitalize;
 	}
 </style>

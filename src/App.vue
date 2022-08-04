@@ -54,10 +54,16 @@ export default {
       }
     },
     runRouterMiddleware() {
-      const { requiresGuest } = this.$route.meta;
+      const { requiresGuest, requiresAuth } = this.$route.meta;
 
       if (requiresGuest === true && this.isAuth === true) {
         this.$router.push('/');
+        return;
+      }
+
+      if (requiresAuth === true && this.isAuth !== true) {
+        this.$router.push('/login');
+        return;
       }
     }
   },
