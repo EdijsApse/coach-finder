@@ -1,6 +1,9 @@
 <template>
 <base-container class="mt-header-height page">
-  <base-card class="w-max-50">
+  <base-card class="w-max-50 relative">
+    <transition name="fade-in">
+      <base-loader v-if="loading"></base-loader>
+    </transition>
     <h1 class="page-title">Become a coach</h1>
     <form @submit.prevent="createCoach">
       
@@ -12,7 +15,7 @@
         </div>
 
         <div class="form-control-col">
-          <base-form-control :errors="errors" field="price" id="price" label="Expected price (EUR)">
+          <base-form-control :errors="errors" field="price" id="price" label="Expected price per hour (EUR)">
             <input type="number" step="0.01" id="price" v-model="price" />
           </base-form-control>
         </div>
@@ -21,7 +24,7 @@
       <div class="form-control-row">
         <div class="form-control-col">
           <base-form-control :errors="errors" field="fields" id="fields" label="Coaching fields">
-            <input type="text" id="fields" v-model.trim="fieldValue" @keypress.enter="addField" placeholder="Enter to confirm..." />
+            <input type="text" id="fields" v-model.trim="fieldValue" @keypress.enter.prevent="addField" placeholder="Enter to confirm..." />
           </base-form-control>
           <div class="tags" v-if="fields.length">
             <base-tag v-for="field in fields" :key="field.id" class="d-inline-block single-field">
@@ -55,6 +58,9 @@
 </template>
 
 <script>
+import axios from '../../axios';
+import { mapActions } from 'vuex';
+
 export default {
   data() {
     return {
@@ -64,22 +70,56 @@ export default {
       fields: [],
       fieldValue: '',
       location: '',
-      about: ''
+      about: '',
+      loading: false
     }
   },
   methods: {
+    ...mapActions(['addErrorMessage', 'addSuccessMessage']),
     createCoach() {
+      const coach = {
+        jobtitle: this.jobtitle,
+        price: this.price,
+        fields: this.fields.map((field) => field.value),
+        location: this.location,
+        about: this.about
+      };
 
+      this.loading = true;
+
+      this.errors = [];
+
+      axios.post('/coaches/new', coach).then(res => {
+        const { success, coach, message, errors } = res.data;
+        
+        if (success === true) {
+          
+          this.addSuccessMessage(message);
+          this.$router.push({name: 'CoachViewPage', params: { coachId: coach._id }});
+
+        } else if (success === false && errors) {
+          this.errors = errors;
+        }
+
+      })
+      .catch((err) => {
+        this.addErrorMessage(err.message);
+      })
+      .finally(() => {
+        this.loading = false;
+      })
     },
     removeField(id) {
       this.fields = this.fields.filter(field => field.id !== id);
     },
     addField() {
-      this.fields.push({
-        id: Date.now(),
-        value: this.fieldValue
-      });
-      this.fieldValue = '';
+      if (this.fieldValue) {
+        this.fields.push({
+          id: Date.now(),
+          value: this.fieldValue
+        });
+        this.fieldValue = '';
+      }
     }
   }
 }

@@ -13,5 +13,14 @@ const CredentialsSchema = Joi.object({
   email: Joi.string().required().email(),
 })
 
+const CoachSchema = Joi.object({
+  jobtitle: Joi.string().required(),
+  price: Joi.number().min(0).required(),
+  fields: Joi.array().items(Joi.string()).min(1).required(),
+  location: Joi.string().required(),
+  about: Joi.string().allow('').optional()
+})
+
 module.exports.UserSchema = UserSchema;
 module.exports.CredentialsSchema = CredentialsSchema;
+module.exports.CoachSchema = CoachSchema;
