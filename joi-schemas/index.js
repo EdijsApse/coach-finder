@@ -15,7 +15,7 @@ const CredentialsSchema = Joi.object({
 
 const CoachSchema = Joi.object({
   jobtitle: Joi.string().required(),
-  price: Joi.number().min(0).required(),
+  price: Joi.number().min(0.01).required(),
   fields: Joi.array().items(Joi.string()).min(1).required(),
   location: Joi.string().required(),
   about: Joi.string().allow('').optional()

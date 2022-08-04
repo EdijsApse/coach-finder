@@ -1,5 +1,13 @@
 const mongoose = require('mongoose');
 
+function getPrice(price){
+  return ( price / 100).toFixed(2);
+}
+
+function setPrice(price){
+  return price * 100;
+}
+
 const userCoachSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -23,7 +31,9 @@ const coachSchema = new mongoose.Schema({
   price: {
     type: Number,
     required: true,
-    min: 0
+    min: 0.01,
+    get: getPrice,
+    set: setPrice
   },
   fields: {
     type: [String],
@@ -48,7 +58,6 @@ const coachSchema = new mongoose.Schema({
 
 coachSchema.pre('save', function() {
   this.fields = this.fields.map((field) => field.toLowerCase());
-  this.price = this.price.toFixed(2)
 });
 
 coachSchema.virtual('member_since').get(function() {
