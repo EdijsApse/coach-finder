@@ -20,7 +20,7 @@
 			</div>
 		</base-card>
 		<teleport to="html">
-			<send-message-modal v-if="showMessageModal" @close-modal="showMessageModal = false"></send-message-modal>
+			<send-message-modal v-if="showMessageModal" @close-modal="showMessageModal = false" :coachId="coach.id"></send-message-modal>
 		</teleport>
 	</li>
 </template>

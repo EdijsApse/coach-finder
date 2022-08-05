@@ -19,7 +19,7 @@
         <h2 class="my-6" v-if="!loading && !coaches.length">Couldn't find any coaches</h2>
       </div>
     </transition>
-    <router-link :to="{name: 'CoachCreatePage'}" class="btn fixed-bottom">Become a coach</router-link>
+    <router-link v-if="isAuth" :to="{name: 'CoachCreatePage'}" class="btn fixed-bottom">Become a coach</router-link>
   </base-container>
 </template>
 
@@ -49,7 +49,7 @@
       this.debounceFn = _.debounce(this.search, 500);
     },
     computed: {
-      ...mapGetters(['coaches']),
+      ...mapGetters(['coaches', 'isAuth']),
       hasFilters() {
         const { q, location, name } = this.filter;
         
@@ -76,8 +76,8 @@
       },
       search() {
 
-        if (this.hasFilters) {
-          this.$router.push({ name: 'CoachQueryListPage', params: { q: this.filter.q}, query: {...this.filter, page: this.page } })
+        if (this.filter.q) {
+          this.$router.push({ name: 'CoachQueryListPage', params: { q: this.filter.q }, query: {...this.filter, page: this.page } })
         } else {
           this.$router.push({ name: 'CoachListPage', query: { page: this.page }});
         }

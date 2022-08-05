@@ -21,6 +21,11 @@ const CoachSchema = Joi.object({
   about: Joi.string().allow('').optional()
 })
 
+const MessageSchema = Joi.object({
+  message: Joi.string().required()
+})
+
 module.exports.UserSchema = UserSchema;
 module.exports.CredentialsSchema = CredentialsSchema;
 module.exports.CoachSchema = CoachSchema;
+module.exports.MessageSchema = MessageSchema;

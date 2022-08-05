@@ -36,7 +36,6 @@ function tokenValidationMiddleware(req, res, next) {
     try {
       const userModel = await User.findById(user._id);
       if (userModel) {
-        console.log(userModel)
         req.user = userModel.getApiData();
 
         return next();

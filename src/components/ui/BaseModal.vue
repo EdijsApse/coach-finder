@@ -38,7 +38,7 @@
 		left: 0;
 		width: 100%;
 		height: 100%;
-		z-index: 9999;
+		z-index: 100;
 		padding: var(--space-8);
 		overflow-y: hidden;
 	}

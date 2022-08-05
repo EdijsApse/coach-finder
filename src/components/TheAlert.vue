@@ -48,7 +48,7 @@ import { mapActions } from 'vuex';
     position: fixed;
     top: var(--space-8);
     left: var(--space-8);
-    z-index: 3;
+    z-index: 101;
     width: 30rem;
     background-color: #FFF;
   }

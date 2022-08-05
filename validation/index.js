@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const { UserSchema, CredentialsSchema, CoachSchema } = require('../joi-schemas');
+const { UserSchema, CredentialsSchema, CoachSchema, MessageSchema } = require('../joi-schemas');
 
 function validateUser(req, res, next) {
   return validator(req, res, next, UserSchema);
@@ -11,6 +11,10 @@ function validateCredentials(req, res, next) {
 
 function validateCoach(req, res, next) {
   return validator(req, res, next, CoachSchema);
+}
+
+function validateMessageToCoach(req, res, next) {
+  return validator(req, res, next, MessageSchema);
 }
 
 function validator(req, res, next, Schema) {
@@ -63,5 +67,6 @@ module.exports = {
   validateUser: validateUser,
   isUniqueEmail: isUniqueEmail,
   validateCredentials: validateCredentials,
-  validateCoach: validateCoach
+  validateCoach: validateCoach,
+  validateMessageToCoach: validateMessageToCoach
 }

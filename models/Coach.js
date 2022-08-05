@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const UserCoachSchema = require('../custom-schemas/UserCoachSchema');
 
 function getPrice(price){
   return ( price / 100).toFixed(2);
@@ -7,21 +8,6 @@ function getPrice(price){
 function setPrice(price){
   return price * 100;
 }
-
-const userCoachSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  surname: {
-    type: String,
-    required: true,
-  },
-  id: {
-    type: mongoose.ObjectId,
-    required: true
-  }
-});
 
 const coachSchema = new mongoose.Schema({
   jobtitle: {
@@ -47,7 +33,7 @@ const coachSchema = new mongoose.Schema({
     type: String
   },
   user: {
-    type: userCoachSchema,
+    type: UserCoachSchema,
     required: true
   },
   created_at: {
@@ -76,6 +62,10 @@ coachSchema.methods.getApiData = function() {
     member_since: this.member_since,
     id: this.id
   }
+}
+
+coachSchema.methods.belongToUser = function(id) {
+  return this.user.id == id;
 }
 
 module.exports = mongoose.model('Coach', coachSchema);
