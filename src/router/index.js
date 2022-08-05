@@ -65,10 +65,7 @@ const router = createRouter({
 			component: NotFoundPage,
 			path: '/:path(.*)'
 		}
-	],
-	scrollBehavior() {
-		return { top: 0, behavior: 'smooth' }
-	}
+	]
 })
 
 router.beforeEach((to) => {

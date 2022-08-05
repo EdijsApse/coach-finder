@@ -73,7 +73,8 @@ coachSchema.methods.getApiData = function() {
     about: this.about,
     user: this.user,
     created_at: this.created_at,
-    member_since: this.member_since
+    member_since: this.member_since,
+    id: this.id
   }
 }
 

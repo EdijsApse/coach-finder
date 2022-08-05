@@ -1,10 +1,12 @@
-const Coach = require('../models/Coach')
+const CoachDataProvider = require('../dataproviders/CoachesDataProvider');
 const UnhandledError = require('../utils/UnhandledError');
 
-function index(req, res) {  
-  res.json({
-    data: []
-  });
+async function index(req, res) {
+  const coachesDataProvider = new CoachDataProvider(req.query, { pageSize: 10, currentPage: req.query.page });
+
+  await coachesDataProvider.search();
+
+  res.json(coachesDataProvider.getApiData());
 }
 
 async function create(req, res, next) {

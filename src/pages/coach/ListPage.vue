@@ -4,6 +4,9 @@
     <base-card class="filters mb-6">
       <div class="filter-wrapper">
         <input placeholder="Search for keywords" v-model="filter.q" />
+        <input placeholder="Search by location" v-model="filter.location" />
+        <input placeholder="Search by name" v-model="filter.name" />
+        <base-button class="clear-filter-btn" v-if="hasFilters" @click="clearFilters">Clear filters</base-button>
       </div>
     </base-card>
     <transition name="fade-in">
@@ -33,7 +36,9 @@
         loading: false,
         debounceFn: null,
         filter: {
-          q: this.q ?? ''
+          q: this.q ?? '',
+          location: this.$route.query.location ?? '',
+          name: this.$route.query.name ?? ''
         },
         page: this.$route.query.page ?? 1,
         pages: 0,
@@ -45,20 +50,34 @@
     },
     computed: {
       ...mapGetters(['coaches']),
+      hasFilters() {
+        const { q, location, name } = this.filter;
+        
+        if (q || location || name) {
+          return true;
+        }
+        
+        return false;
+      },
       hasMorePages() {
         return this.pages > 1
       }
     },
     methods: {
       ...mapActions(['addCoaches']),
+      clearFilters() {
+        this.filter.q = '';
+        this.filter.location = '';
+        this.filter.name = '';
+      },
       setPage(page) {
         this.page = page;
         this.search();
       },
       search() {
 
-        if (this.filter.q) {
-          this.$router.push({ name: 'CoachQueryListPage', params: { q: this.filter.q}, query: {q: this.filter.q, page: this.page } })
+        if (this.hasFilters) {
+          this.$router.push({ name: 'CoachQueryListPage', params: { q: this.filter.q}, query: {...this.filter, page: this.page } })
         } else {
           this.$router.push({ name: 'CoachListPage', query: { page: this.page }});
         }
@@ -68,7 +87,7 @@
 
       loadCoaches() {
         const query = {
-          q: this.filter.q,
+          ...this.filter,
           page: this.page
         };
 
@@ -103,7 +122,7 @@
 <style scoped>
   .filter-wrapper {
     display: flex;
-    gap: var(--space-1) var(--space-2);
+    gap: var(--space-1) var(--space-4);
   }
 
   .filter-wrapper input, .filter-wrapper button {
@@ -111,6 +130,7 @@
     padding: var(--space-2) var(--space-4);
     height: 2rem;
     line-height: 1;
+    width: auto;
   }
   .fixed-bottom {
     position: fixed;
