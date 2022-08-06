@@ -7,8 +7,10 @@ import CoachViewPage from '../pages/coach/ViewPage';
 import LoginPage from '../pages/auth/LoginPage';
 import RegisterPage from '../pages/auth/RegisterPage';
 import CoachCreatePage from '../pages/coach/CreatePage';
+import MessagesListPage from '../pages/messages/ListPage';
 
 import store from '../store';
+import helpers from '../helpers';
 
 const router = createRouter({
 	history: createWebHistory(),
@@ -45,6 +47,14 @@ const router = createRouter({
 			props: true
 		},
 		{
+			name: 'MessagesPage',
+			component: MessagesListPage,
+			path: '/messages',
+			meta: {
+				requiresAuth: true
+			}
+		},
+		{
 			name: 'LoginPage',
 			component: LoginPage,
 			path: '/login',
@@ -68,20 +78,28 @@ const router = createRouter({
 	]
 })
 
-router.beforeEach((to) => {
+router.beforeEach(async (to, from, next) => {
+	const userLoaded = store.getters.userRefreshed;
+
+	if (userLoaded !== true) {
+		await helpers.refreshUserFromToken().finally(() => {
+			store.dispatch('userRefreshed');
+		});
+	}
+
 	const { requiresGuest, requiresAuth } = to.meta;
 
 	const isAuth = store.getters.isAuth;
 
 	if (requiresGuest === true && isAuth === true) {
-		return false
+		return next({ name: 'LandingPage' });
 	}
 
 	if (requiresAuth === true && isAuth !== true) {
-		return false
+		return next({ name: 'LoginPage' });
 	}
 
-	return true;
+	return next();
 })
 
 export default router;

@@ -2,29 +2,20 @@
   <transition name="pop-in">
     <the-alert v-if="alertMessage" :message="alertMessage" :success="alertIsSuccess"></the-alert>
   </transition>
-  
-  <div v-if="loading">Loading app</div>
-  
-  <div v-else>
-    <the-header :bright-mode="isLandingPage"></the-header>
-    <router-view></router-view>
-  </div>
+
+  <the-header :bright-mode="isLandingPage"></the-header>
+  <router-view></router-view>
 
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters } from "vuex";
 import TheHeader from "./components/TheHeader";
 import TheAlert from "./components/TheAlert";
-import axios from './axios';
+
 export default {
-  data() {
-    return {
-      loading: false
-    }
-  },
   computed: {
-    ...mapGetters(['alertIsSuccess', 'alertMessage', 'isAuth', 'user']),
+    ...mapGetters(['alertIsSuccess', 'alertMessage']),
     isLandingPage() {
       return this.$route.name === 'LandingPage'
     }
@@ -32,43 +23,6 @@ export default {
   components: {
     'the-header': TheHeader,
     'the-alert': TheAlert
-  },
-  methods: {
-    ...mapActions(['logout', 'refreshUser']),
-    setupApp() {
-      const token = localStorage.getItem('token');
-      if (token) {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        this.loading = true;
-        axios.get('/refresh-user').then(response => {
-          const { success, user } = response.data;
-          if (success === true) {
-            this.refreshUser(user);
-          }
-        }).catch(() => {
-          this.logout();
-        }).finally(() => {
-          this.runRouterMiddleware();
-          this.loading = false;
-        })
-      }
-    },
-    runRouterMiddleware() {
-      const { requiresGuest, requiresAuth } = this.$route.meta;
-
-      if (requiresGuest === true && this.isAuth === true) {
-        this.$router.push('/');
-        return;
-      }
-
-      if (requiresAuth === true && this.isAuth !== true) {
-        this.$router.push('/login');
-        return;
-      }
-    }
-  },
-  created() {
-    this.setupApp();
   }
 };
 </script>

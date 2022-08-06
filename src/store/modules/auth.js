@@ -4,7 +4,8 @@ export default {
   state() {
     return {
       isAuth: false,
-      user: null
+      user: null,
+      userRefreshed: false
     }
   },
   mutations: {
@@ -15,6 +16,9 @@ export default {
     logoutUser(state) {
       state.user = null;
       state.isAuth = false;
+    },
+    setUserRefreshed(state) {
+      state.userRefreshed = true
     }
   },
   actions: {
@@ -30,6 +34,9 @@ export default {
     },
     refreshUser({ commit }, user) {
       commit('loginUser', user);
+    },
+    userRefreshed({commit}) {
+      commit('setUserRefreshed', true);
     }
   },
   getters: {
@@ -38,6 +45,9 @@ export default {
     },
     isAuth(state) {
       return state.isAuth
+    },
+    userRefreshed(state) {
+      return state.userRefreshed
     }
   }
 }
