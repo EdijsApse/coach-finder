@@ -43,8 +43,10 @@ html {
 
   --color-purple: #9708cc;
   --color-cloud-blue: #43cbff;
+  --color-cloud-blue-opacity: rgba(67, 203, 255, 0.5);
   --color-dark-grey: #0F0E0E;
   --color-bright-grey: #bdbdbd;
+  --color-bright-grey-opacity: rgba(189, 189, 189, 0.2);
   --color-bright: #fff;
   --color-danger: #dc3545;
 
@@ -57,6 +59,7 @@ html {
   --space-8: 2rem;
 
   --border-radius-medium: 8px;
+  --border-radius-large: 16px;
 }
 
 body {

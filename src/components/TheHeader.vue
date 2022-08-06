@@ -9,8 +9,8 @@
         <li>
           <router-link :to="{name: 'CoachListPage'}">Coaches</router-link>
         </li>
-        <li>
-          <a href="#">Requests</a>
+        <li v-if="isAuth">
+          <router-link :to="{name: 'MessagesPage'}">Messages</router-link>
         </li>
       </ul>
       <ul v-if="!isAuth">
@@ -22,9 +22,6 @@
         </li>
       </ul>
       <ul v-else>
-        <li>
-          <a href="/profile">Profile</a>
-        </li>
         <li>
           <base-button @click="logoutUser">Logout</base-button>
         </li>

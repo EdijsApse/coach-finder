@@ -16,26 +16,41 @@
 						<base-badge class="mb-4 single-badge" :icon-classes="'fa-solid fa-coins'">Asking price: <b>{{ coach.price }} EUR / Hour</b></base-badge>
 						<base-badge class="single-badge" :icon-classes="'fa-solid fa-calendar-day'">Member Since: <b>{{ coach.member_since }}</b></base-badge>
 					</div>
-				<base-button @click="showMessageModal = true">Send message</base-button>
+				<base-button @click="sendMessageAttempt">Send message</base-button>
 			</div>
 		</base-card>
 		<teleport to="html">
-			<send-message-modal v-if="showMessageModal" @close-modal="showMessageModal = false" :coachId="coach.id"></send-message-modal>
+			<transition name="fade-in">
+				<send-message-modal v-if="showMessageModal" @close-modal="showMessageModal = false" :coachId="coach.id"></send-message-modal>
+			</transition>
 		</teleport>
 	</li>
 </template>
 
 <script>
 	import SendMessageModal from '../components/SendMessageModal.vue';
+	import { mapGetters } from 'vuex';
 
 	export default {
 		props: ['coach'],
+		computed: {
+			...mapGetters(['isAuth'])
+		},
 		components: {
 			'send-message-modal': SendMessageModal
 		},
 		data() {
 			return {
 				showMessageModal: false,
+			}
+		},
+		methods: {
+			sendMessageAttempt () {
+				if (this.isAuth) {
+					this.showMessageModal = true
+				} else {
+					this.$router.push({name: 'LoginPage'});
+				}
 			}
 		}
 	}
