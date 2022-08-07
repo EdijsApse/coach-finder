@@ -1,10 +1,11 @@
 <template>
-  <base-card class="p-2">
+  <base-card class="p-2 relative min-h-65">
     <h3>Recent chats</h3>
-    <ul>
-      <single-room class="room active"></single-room>
-      <single-room class="room"></single-room>
-      <single-room class="room"></single-room>
+    <transition name="fade-in">
+      <base-loader v-if="loading"></base-loader>
+    </transition>
+    <ul v-if="rooms.length">
+      <single-room class="room" v-for="room in rooms" :key="room.id" v-bind="room" @click="$emit('set-active-room', room)" :class="{'active': (activeRoom && room.id === activeRoom.id)}"></single-room>
     </ul>
   </base-card>
 </template>
@@ -13,13 +14,18 @@
 import SingleRoom from './SingleRoom';
 
 export default {
+  props: ['loading', 'rooms', 'activeRoom'],
   components: {
     'single-room': SingleRoom
-  }
+  },
+  emits:['set-active-room']
 }
 </script>
 
 <style scoped>
+  .min-h-65 {
+    min-height: 65vh;
+  }
   .p-2 {
     padding: var(--space-2)
   }

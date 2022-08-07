@@ -1,8 +1,8 @@
 <template>
   <base-container class="mt-header-height page chat-page">
-    <the-rooms class="room-col"></the-rooms>
-    <chat-window class="window-col" :messages="messages">
-      <h2>Edijs Apse</h2>
+    <the-rooms class="room-col" :loading="loadingRooms" :rooms="rooms" :activeRoom="activeRoom" @set-active-room="setRoom"></the-rooms>
+    <chat-window class="window-col" :messages="messages" v-if="activeRoom">
+      <h2>{{ activeRoom.receiver.name }}</h2>
       <ul>
         <chat-message v-for="message in messages" :key="message.id" :message="message"></chat-message>
       </ul>
@@ -18,6 +18,8 @@
   import TheRooms from '../../components/TheRooms.vue';
   import ChatWindow from '../../components/ChatWindow.vue';
   import ChatMessage from '../../components/ChatMessage.vue';
+  import axios from '../../axios';
+  import { mapActions } from 'vuex';
 
   export default {
     data() {
@@ -52,7 +54,10 @@
             isMyMessage: true,
           },
         ],
-        message: ''
+        message: '',
+        rooms: [],
+        activeRoom: null,
+        loadingRooms: false,
       }
     },
     components: {
@@ -61,10 +66,29 @@
       'chat-message': ChatMessage
     },
     methods: {
+      ...mapActions(['addErrorMessage']),
+      setRoom(room) {
+        this.activeRoom = room;
+      },
+      loadRooms() {
+        this.loadRooms = true;
+        axios.get('/messages/rooms').then(res => {
+          const { rooms } = res.data;
+          if (rooms) {
+            this.rooms = rooms;
+          } else {
+            this.addErrorMessage('Couldnt load rooms!');
+          }
+        }).catch(() => {
+          this.addErrorMessage('Couldnt load rooms!');
+        }).finally(() => {
+          this.loadingRooms = false;
+        })
+      },
       sendMessage() {}
     },
-    created() {
-      console.log('created')
+    mounted() {
+      this.loadRooms()
     }
   }
 </script>

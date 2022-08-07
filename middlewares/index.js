@@ -18,19 +18,13 @@ function defaultErrorHandler(err, req, res, next) {
   });
 }
 
-function setHeaderMiddleware(req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE,OPTIONS');
-  next();
-}
-
 function tokenValidationMiddleware(req, res, next) {
   passport.authenticate("jwt", { session: false }, async (err, user) => {
     if (err) {
       return next(new UnhandledError('Something went wrong!', err));
     }
     if (!user) {
+      console.log('user not found!')
       return next(new UnauthorizedError('You are not authorized to see this resource!'));
     }
     try {
@@ -50,6 +44,5 @@ function tokenValidationMiddleware(req, res, next) {
 
 module.exports = {
   defaultErrorHandler: defaultErrorHandler,
-  setHeaderMiddleware: setHeaderMiddleware,
   tokenValidationMiddleware: tokenValidationMiddleware
 }

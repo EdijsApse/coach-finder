@@ -14,6 +14,10 @@ const messageSchema = new mongoose.Schema({
     type: UserCoachSchema,
     required: true
   },
+  roomId: {
+    type: mongoose.ObjectId,
+    required: true
+  },
   created_at: {
     type: Date,
     default: Date.now()

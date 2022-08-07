@@ -2,6 +2,7 @@ const CoachDataProvider = require('../dataproviders/CoachesDataProvider');
 const UnhandledError = require('../utils/UnhandledError');
 const Coach = require('../models/Coach');
 const Message = require('../models/Message');
+const MessageRoom = require('../models/MessageRoom')
 
 async function index(req, res) {
   const coachesDataProvider = new CoachDataProvider(req.query, { pageSize: 10, currentPage: req.query.page });
@@ -76,18 +77,41 @@ async function sendMessage(req, res, next) {
       });
     }
 
+    const sender = {
+      name: req.user.name,
+      surname: req.user.surname,
+      id: req.user.id
+    };
+
+    const receiver = {
+      name: coach.user.name,
+      surname: coach.user.surname,
+      id: coach.user.id,
+    }
+    
+    let room = await MessageRoom.findOne({
+      '$and': [
+        { '$in': { roomUsers: { id: req.user.id } } },
+        { '$in': { roomUsers: { id: coach.user.id } }}
+      ]
+    });
+
+    if (!room) {
+      room = await MessageRoom.create({ roomUsers: [sender, receiver] })
+    }
+
+    if (!room) {
+      return res.json({
+        success: false,
+        message: 'Couldnt create chat room!'
+      });
+    }
+
     const message = {
       message: req.body.message,
-      from: {
-        name: req.user.name,
-        surname: req.user.surname,
-        id: req.user.id
-      },
-      to: {
-        name: coach.user.name,
-        surname: coach.user.surname,
-        id: coach.user.id,
-      }
+      roomId: room.id,
+      from: sender,
+      to: receiver
     }
 
     await Message.create(message);

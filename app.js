@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const passport = require('passport');
+const cors = require('cors');
 
 const app = express();
 
@@ -13,6 +14,7 @@ const { tokenValidationStrategy, loginStartegy, registerStrategy } = require('./
 
 app.use(express.static('public'));
 app.use(express.json());
+app.use(cors());
 
 passport.use(tokenValidationStrategy);// Strategy for retrieving token from header
 passport.use('login', loginStartegy); // Strategy for login

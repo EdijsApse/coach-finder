@@ -1,19 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const coachRoutes = require("./coachRoutes");
-const userRoutes = require("./userRoutes");
 const authRoutes = require("./authRoutes");
-const { setHeaderMiddleware, tokenValidationMiddleware } = require("../../middlewares");
+const messagesRoutes = require("./messagesRoutes");
 
-router.use(setHeaderMiddleware);
+const { tokenValidationMiddleware } = require("../../middlewares");
 
 router.use("/coaches", coachRoutes);
+router.use("/messages", tokenValidationMiddleware, messagesRoutes);
 router.use("/", authRoutes);
-
-router.use(
-  "/user",
-  tokenValidationMiddleware,
-  userRoutes
-);
 
 module.exports = router;

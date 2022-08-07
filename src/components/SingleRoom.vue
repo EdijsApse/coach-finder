@@ -5,13 +5,18 @@
         <img src="../assets/temp-img.jpg" />
       </div>
       <div class="room-details">
-        <h6>Edijs Apse</h6>
-        <p>Some single message</p>
-        <date datetime="2018-07-07T20:00:00">2018-07-07T20:00:00</date>
+        <h6>{{ receiver.name}}</h6>
+        <date :datetime="created_at">{{ created }}</date>
       </div>
     </div>
   </li>
 </template>
+
+<script>
+  export default {
+    props: ['id', 'receiver', 'roomUsers', 'created_at', 'created']
+  }
+</script>
 
 <style scoped>
   li {
@@ -20,6 +25,7 @@
   .sinlge-room {
     display: flex;
     padding: var(--space-2);
+    align-items: center;
   }
 
   .img-thumb {
