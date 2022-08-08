@@ -91,10 +91,12 @@ async function sendMessage(req, res, next) {
     
     let room = await MessageRoom.findOne({
       '$and': [
-        { '$in': { roomUsers: { id: req.user.id } } },
-        { '$in': { roomUsers: { id: coach.user.id } }}
+        { roomUsers: { '$elemMatch': { id: req.user.id } } },
+        { roomUsers: { '$elemMatch': { id: coach.user.id } }}
       ]
     });
+
+    console.log(room)
 
     if (!room) {
       room = await MessageRoom.create({ roomUsers: [sender, receiver] })

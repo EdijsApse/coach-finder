@@ -7,6 +7,7 @@
     <ul v-if="rooms.length">
       <single-room class="room" v-for="room in rooms" :key="room.id" v-bind="room" @click="$emit('set-active-room', room)" :class="{'active': (activeRoom && room.id === activeRoom.id)}"></single-room>
     </ul>
+    <p class="no-rooms" v-else-if="!loading && rooms.length === 0">No rooms found</p>
   </base-card>
 </template>
 
@@ -23,6 +24,9 @@ export default {
 </script>
 
 <style scoped>
+  .no-rooms {
+    text-align: center;
+  }
   .min-h-65 {
     min-height: 65vh;
   }

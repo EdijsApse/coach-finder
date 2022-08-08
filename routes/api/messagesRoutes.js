@@ -4,7 +4,7 @@ const controller = require('../../controllers/MessagesController');
 
 router.get('/rooms', controller.getRooms);
 
-router.get('/rooms/:roomId', controller.getRooms);
+router.get('/rooms/:roomId', controller.getRoomMessages);
 
 router.post('/rooms/:roomId', controller.sendMessage);
 

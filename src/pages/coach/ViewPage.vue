@@ -31,7 +31,7 @@
         </base-card>
         <base-button class="mt-8" @click="showMessageModal = true">Send message</base-button>
         <teleport to="html">
-          <send-message-modal v-if="showMessageModal" @close-modal="showMessageModal = false"></send-message-modal>
+          <send-message-modal v-if="showMessageModal" @close-modal="showMessageModal = false" :coachId="coach.id"></send-message-modal>
         </teleport>
       </div>
     </transition>

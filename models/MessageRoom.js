@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const UserCoachSchema = require('../custom-schemas/UserCoachSchema');
+const Message = require('./Message');
 
 const roomSchema = new mongoose.Schema({
   roomUsers: {
@@ -29,9 +30,13 @@ roomSchema.methods.getApiData = function(userId) {
   }
 }
 
-roomSchema.statics.getRoomsByUser = async function(userId) {
-  const rooms = await this.find({ '$in': { roomUsers: userId } }).sort({created_at: -1});
+roomSchema.methods.getMessages = async function(logedInUser) {
+  const messages = await Message.find({roomId: this.id}).sort();
+  return messages.map((msg) => msg.getApiData(logedInUser))
+}
 
+roomSchema.statics.getRoomsByUser = async function(userId) {
+  const rooms = await this.find({ 'roomUsers': { '$elemMatch': { id: userId } } }).sort({created_at: -1});
   return rooms.map((room) => room.getApiData(userId));
 };
 

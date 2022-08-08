@@ -3,11 +3,14 @@
     <the-rooms class="room-col" :loading="loadingRooms" :rooms="rooms" :activeRoom="activeRoom" @set-active-room="setRoom"></the-rooms>
     <chat-window class="window-col" :messages="messages" v-if="activeRoom">
       <h2>{{ activeRoom.receiver.name }}</h2>
-      <ul>
+      <ul class="relative" ref="chatWindow">
+        <transition name="fade-in">
+          <base-loader v-if="loadingChat"></base-loader>
+        </transition>
         <chat-message v-for="message in messages" :key="message.id" :message="message"></chat-message>
       </ul>
       <form @submit.prevent="sendMessage">
-        <textarea v-model="message"></textarea>
+        <textarea v-model.trim="message"></textarea>
         <base-button>Send</base-button>
       </form>
     </chat-window>
@@ -24,40 +27,12 @@
   export default {
     data() {
       return {
-        messages: [
-          {
-            message: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum',
-            isMyMessage: true,
-          },
-          {
-            message: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum',
-            isMyMessage: true,
-          },
-          {
-            message: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum',
-            isMyMessage: false,
-          },
-          {
-            message: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum',
-            isMyMessage: true,
-          },
-          {
-            message: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum',
-            isMyMessage: false,
-          },
-          {
-            message: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum',
-            isMyMessage: false,
-          },
-          {
-            message: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum',
-            isMyMessage: true,
-          },
-        ],
+        messages: [],
         message: '',
         rooms: [],
         activeRoom: null,
         loadingRooms: false,
+        loadingChat: false,
       }
     },
     components: {
@@ -69,9 +44,26 @@
       ...mapActions(['addErrorMessage']),
       setRoom(room) {
         this.activeRoom = room;
+        this.loadChat();
+      },
+      loadChat() {
+        this.loadingChat = true;
+        axios.get(`/messages/rooms/${this.activeRoom.id}`).then((res) => {
+          const { messages, success, errMsg } = res.data;
+          if (success === true) {
+            this.messages = messages;
+          } else if (success === false) {
+            this.addErrorMessage(errMsg)
+          }
+        }).catch(() => {
+          this.addErrorMessage('Couldnt load messages!')
+        }).finally(() => {
+          this.loadingChat = false;
+          this.scrollToBottom();
+        })
       },
       loadRooms() {
-        this.loadRooms = true;
+        this.loadingRooms = true;
         axios.get('/messages/rooms').then(res => {
           const { rooms } = res.data;
           if (rooms) {
@@ -85,7 +77,29 @@
           this.loadingRooms = false;
         })
       },
-      sendMessage() {}
+      sendMessage() {
+        if (!this.message) {
+          this.addErrorMessage('Enter message!');
+          return
+        }
+
+        axios.post(`/messages/rooms/${this.activeRoom.id}`, {message: this.message}).then(res => {
+          const { success, message, inserted } = res.data;
+          if (success === true) {
+            this.messages.push(inserted);
+            this.message = '';
+          } else if (success === false) {
+            this.addErrorMessage(message);
+          }
+        }).catch(() => {
+          this.addErrorMessage('Couldnt send message!');
+        }).finally(() => {
+          this.scrollToBottom();
+        })
+      },
+      scrollToBottom() {
+        this.$refs.chatWindow.scroll({top: this.$refs.chatWindow.scrollHeight});
+      }
     },
     mounted() {
       this.loadRooms()

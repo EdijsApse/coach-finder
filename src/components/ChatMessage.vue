@@ -1,7 +1,7 @@
 <template>
   <li :class="mssageClasses">
     <p>{{ message.message }}</p>
-    <date datetime="2018-07-07T20:00:00">2018-07-07T20:00:00</date>
+    <date :datetime="message.created_at">{{ message.created }}</date>
   </li>
 </template>
 
@@ -12,7 +12,7 @@ export default {
  computed: {
   mssageClasses() {
     return {
-      'sender': this.message.isMyMessage
+      'my-message': this.message.isMyMessage === true
     };
   }
  }
@@ -20,12 +20,15 @@ export default {
 </script>
 
 <style scoped>
-  .sender {
+  .my-message {
     margin-left: auto;
   }
-  .sender p {
+  .my-message p {
     background-color: var(--color-bright-grey-opacity);
     color: var(--color-dark-grey);
+  }
+  .my-message date {
+    text-align: right;
   }
   li {
     max-width: 75%;
@@ -42,7 +45,6 @@ export default {
   date {
     color: var(--color-bright-grey);
     display: block;
-    text-align: right;
     margin-top: var(--space-2);
     font-size: 0.7rem;
   }
