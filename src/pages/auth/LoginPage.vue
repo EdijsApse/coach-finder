@@ -5,13 +5,13 @@
         <base-loader v-if="loading"></base-loader>
       </transition>
       <h1 class="page-title">Login</h1>
-      <form @submit.prevent="loginUser">
+      <form @submit.prevent="login">
         
-        <base-form-control :errors="errors" field="email" id="email" label="Email address">
+        <base-form-control :errors="errorsArray" field="email" id="email" label="Email address">
           <input type="email" id="email" v-model="email" />
         </base-form-control>
 
-        <base-form-control :errors="errors" field="password" id="password" label="Password">
+        <base-form-control :errors="errorsArray" field="password" id="password" label="Password">
           <input type="password" id="password" v-model="password" />
         </base-form-control>
 
@@ -48,53 +48,46 @@
   </base-container>
 </template>
 
-<script>
-  import { mapActions } from 'vuex';
+<script setup>
+  import { ref } from 'vue';
+  import { useStore } from 'vuex';
   import axios from '../../axios';
+  import { useRouter } from 'vue-router';
 
-  export default {
-    data() {
-      return {
-        loading: false,
-        errors: [],
-        email: '',
-        password: ''
+  const store = useStore();
+  const router = useRouter();
+
+  const loading = ref(false);
+  const errorsArray = ref([]);
+  const email = ref('');
+  const password = ref('');
+
+  function login() {
+    const credentials = {
+      email: email.value,
+      password: password.value
+    };
+
+    loading.value = true;
+    errorsArray.value = [];
+
+    axios.post('/login', credentials)
+    .then((response) => {
+      const { success, errors, user, token, message } = response.data;
+
+      if (success === false && errors) {
+        errorsArray.value = errors;
+      } else if (success === true) {
+        store.dispatch('login', {user, token});
+        store.dispatch('addSuccessMessage', 'Welcome to CoachFinder website!');
+        router.push({name: 'CoachListPage'});
+      } else if (message) {
+        store.dispatch('addErrorMessage', message);
       }
-    },
-    methods: {
-      ...mapActions(['login', 'addErrorMessage', 'addSuccessMessage']),
-      loginUser() {
-        const credentials = {
-          email: this.email,
-          password: this.password
-        };
-
-        this.loading = true;
-        this.errors = [];
-        
-        axios.post('/login', credentials)
-        .then((response) => {
-          const { success, errors, user, token, message } = response.data;
-
-          if (success === false && errors) {
-            this.errors = errors;
-          } else if (success === true) {
-            this.login({user, token});
-            this.addSuccessMessage('Welcome to CoachFinder website!');
-            this.$router.push({name: 'CoachListPage'});
-          } else if (message) {
-            this.addErrorMessage(message)
-          }
-
-        })
-        .catch(err => {
-          console.log(err)
-        })
-        .finally(() => {
-          this.loading = false;
-        })
-      }
-    }
+    })
+    .finally(() => {
+      loading.value = false;
+    })
   }
 </script>
 
