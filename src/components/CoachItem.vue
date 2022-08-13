@@ -2,56 +2,51 @@
 	<li class="mb-6">
 		<base-card class="coach-item">
 			<div class="coach-img">
-				<img src="../assets/temp-img.jpg" :alt="coach.jobtitle" />
+				<img src="../assets/temp-img.jpg" :alt="props.coach.jobtitle" />
 			</div>
 			<div class="coach-details">
-				<router-link :to="{ name: 'CoachViewPage', params: { coachId: coach.id }}" class="coach-link">
-					<h3>{{ coach.user.name }} | <b>{{ coach.jobtitle }}</b></h3>
+				<router-link :to="{ name: 'CoachViewPage', params: { coachId: props.coach.id }}" class="coach-link">
+					<h3>{{ props.coach.user.name }} | <b>{{ props.coach.jobtitle }}</b></h3>
 				</router-link>
 				<div class="tags">
-					<base-tag v-for="(field, index) in coach.fields" :key="index">{{ field }}</base-tag>
+					<base-tag v-for="(field, index) in props.coach.fields" :key="index">{{ field }}</base-tag>
 				</div>
 				<div class="badges">
-						<base-badge class="mb-4 single-badge" :icon-classes="'fa-solid fa-location-dot'">Provides coaching in: <b>{{ coach.location }}</b></base-badge>
-						<base-badge class="mb-4 single-badge" :icon-classes="'fa-solid fa-coins'">Asking price: <b>{{ coach.price }} EUR / Hour</b></base-badge>
-						<base-badge class="single-badge" :icon-classes="'fa-solid fa-calendar-day'">Member Since: <b>{{ coach.member_since }}</b></base-badge>
+						<base-badge class="mb-4 single-badge" :icon-classes="'fa-solid fa-location-dot'">Provides coaching in: <b>{{ props.coach.location }}</b></base-badge>
+						<base-badge class="mb-4 single-badge" :icon-classes="'fa-solid fa-coins'">Asking price: <b>{{ props.coach.price }} EUR / Hour</b></base-badge>
+						<base-badge class="single-badge" :icon-classes="'fa-solid fa-calendar-day'">Member Since: <b>{{ props.coach.member_since }}</b></base-badge>
 					</div>
 				<base-button @click="sendMessageAttempt">Send message</base-button>
 			</div>
 		</base-card>
 		<teleport to="html">
 			<transition name="fade-in">
-				<send-message-modal v-if="showMessageModal" @close-modal="showMessageModal = false" :coachId="coach.id"></send-message-modal>
+				<send-message-modal v-if="showMessageModal" @close-modal="showMessageModal = false" :coachId="props.coach.id"></send-message-modal>
 			</transition>
 		</teleport>
 	</li>
 </template>
 
-<script>
+<script setup>
 	import SendMessageModal from '../components/SendMessageModal.vue';
-	import { mapGetters } from 'vuex';
+	import { useStore } from 'vuex';
+	import { useRouter } from 'vue-router';
+	import { computed, defineProps, ref } from 'vue';
 
-	export default {
-		props: ['coach'],
-		computed: {
-			...mapGetters(['isAuth'])
-		},
-		components: {
-			'send-message-modal': SendMessageModal
-		},
-		data() {
-			return {
-				showMessageModal: false,
-			}
-		},
-		methods: {
-			sendMessageAttempt () {
-				if (this.isAuth) {
-					this.showMessageModal = true
-				} else {
-					this.$router.push({name: 'LoginPage'});
-				}
-			}
+	const store = useStore();
+	const router = useRouter();
+
+	const props = defineProps(['coach']);
+
+	const isAuth = computed(() => store.getters.isAuth);
+
+	const showMessageModal = ref(false);
+
+	function sendMessageAttempt () {
+		if (isAuth.value) {
+			showMessageModal.value = true
+		} else {
+			router.push({name: 'LoginPage'});
 		}
 	}
 </script>
