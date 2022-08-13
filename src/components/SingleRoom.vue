@@ -5,17 +5,16 @@
         <img src="../assets/temp-img.jpg" />
       </div>
       <div class="room-details">
-        <h6>{{ receiver.name}}</h6>
-        <date :datetime="created_at">{{ created }}</date>
+        <h6>{{ props.receiver.name}}</h6>
+        <date :datetime="props.created_at">{{ props.created }}</date>
       </div>
     </div>
   </li>
 </template>
 
-<script>
-  export default {
-    props: ['id', 'receiver', 'roomUsers', 'created_at', 'created']
-  }
+<script setup>
+  import { defineProps } from 'vue';
+  const props = defineProps(['receiver', 'created_at', 'created']);
 </script>
 
 <style scoped>
