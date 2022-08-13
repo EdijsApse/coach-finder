@@ -3,7 +3,7 @@
     <the-rooms class="room-col" :loading="loadingRooms" :rooms="rooms" :activeRoom="activeRoom" @set-active-room="setRoom"></the-rooms>
     <chat-window class="window-col" :messages="messages" v-if="activeRoom">
       <h2>{{ activeRoom.receiver.name }}</h2>
-      <ul class="relative" ref="chatWindow">
+      <ul class="relative" ref="chatWindowElement">
         <transition name="fade-in">
           <base-loader v-if="loadingChat"></base-loader>
         </transition>
@@ -17,94 +17,90 @@
   </base-container>
 </template>
 
-<script>
+<script setup>
   import TheRooms from '../../components/TheRooms.vue';
   import ChatWindow from '../../components/ChatWindow.vue';
   import ChatMessage from '../../components/ChatMessage.vue';
+
   import axios from '../../axios';
-  import { mapActions } from 'vuex';
+  import { useStore } from 'vuex';
+  import { ref, onMounted } from 'vue';
 
-  export default {
-    data() {
-      return {
-        messages: [],
-        message: '',
-        rooms: [],
-        activeRoom: null,
-        loadingRooms: false,
-        loadingChat: false,
-      }
-    },
-    components: {
-      'the-rooms': TheRooms,
-      'chat-window': ChatWindow,
-      'chat-message': ChatMessage
-    },
-    methods: {
-      ...mapActions(['addErrorMessage']),
-      setRoom(room) {
-        this.activeRoom = room;
-        this.loadChat();
-      },
-      loadChat() {
-        this.loadingChat = true;
-        axios.get(`/messages/rooms/${this.activeRoom.id}`).then((res) => {
-          const { messages, success, errMsg } = res.data;
-          if (success === true) {
-            this.messages = messages;
-          } else if (success === false) {
-            this.addErrorMessage(errMsg)
-          }
-        }).catch(() => {
-          this.addErrorMessage('Couldnt load messages!')
-        }).finally(() => {
-          this.loadingChat = false;
-          this.scrollToBottom();
-        })
-      },
-      loadRooms() {
-        this.loadingRooms = true;
-        axios.get('/messages/rooms').then(res => {
-          const { rooms } = res.data;
-          if (rooms) {
-            this.rooms = rooms;
-          } else {
-            this.addErrorMessage('Couldnt load rooms!');
-          }
-        }).catch(() => {
-          this.addErrorMessage('Couldnt load rooms!');
-        }).finally(() => {
-          this.loadingRooms = false;
-        })
-      },
-      sendMessage() {
-        if (!this.message) {
-          this.addErrorMessage('Enter message!');
-          return
-        }
+  const store = useStore();
+  
+  const messages = ref([]);
+  const message = ref('');
+  const rooms = ref([]);
+  const activeRoom = ref(null);
+  const loadingRooms = ref(false);
+  const loadingChat = ref(false);
 
-        axios.post(`/messages/rooms/${this.activeRoom.id}`, {message: this.message}).then(res => {
-          const { success, message, inserted } = res.data;
-          if (success === true) {
-            this.messages.push(inserted);
-            this.message = '';
-          } else if (success === false) {
-            this.addErrorMessage(message);
-          }
-        }).catch(() => {
-          this.addErrorMessage('Couldnt send message!');
-        }).finally(() => {
-          this.scrollToBottom();
-        })
-      },
-      scrollToBottom() {
-        this.$refs.chatWindow.scroll({top: this.$refs.chatWindow.scrollHeight});
-      }
-    },
-    mounted() {
-      this.loadRooms()
-    }
+  const chatWindowElement = ref(null); // Template ref
+
+  function scrollToBottom() {
+    chatWindowElement.value.scroll({top: chatWindowElement.value.scrollHeight});
   }
+
+  function loadChat() {
+    loadingChat.value = true;
+    axios.get(`/messages/rooms/${activeRoom.value.id}`).then((res) => {
+      const { messages: responseMessages, success, errMsg } = res.data;
+      if (success === true) {
+        messages.value = responseMessages;
+      } else if (success === false) {
+        store.dispatch('addErrorMessage', errMsg);
+      }
+    }).catch(() => {
+      store.dispatch('addErrorMessage', 'Couldnt load messages!');
+    }).finally(() => {
+      loadingChat.value = false;
+      scrollToBottom();
+    })
+  }
+
+  function setRoom(room) {
+    activeRoom.value = room;
+    loadChat();
+  }
+
+  function sendMessage() {
+    if (!message.value) {
+      store.dispatch('addErrorMessage','Enter message!');
+      return
+    }
+
+    axios.post(`/messages/rooms/${activeRoom.value.id}`, {message: message.value}).then(res => {
+      const { success, message: responseMessage, inserted } = res.data;
+      if (success === true) {
+        messages.value.push(inserted);
+        message.value = '';
+      } else if (success === false) {
+        store.dispatch('addErrorMessage', responseMessage);
+      }
+    }).catch(() => {
+      store.dispatch('addErrorMessage', 'Couldnt send message!');
+    }).finally(() => {
+      scrollToBottom();
+    })
+  }
+
+  function loadRooms() {
+    loadingRooms.value = true;
+    axios.get('/messages/rooms').then(res => {
+      const { rooms: responseRooms } = res.data;
+      if (responseRooms) {
+        rooms.value = responseRooms;
+      } else {
+        store.dispatch('addErrorMessage', 'Couldnt load rooms!');
+      }
+    }).catch(() => {
+      store.dispatch('addErrorMessage', 'Couldnt load rooms!');
+    }).finally(() => {
+      loadingRooms.value = false;
+    })
+  }
+
+  onMounted(loadRooms);
 </script>
 
 <style scoped>

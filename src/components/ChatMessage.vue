@@ -1,22 +1,18 @@
 <template>
   <li :class="mssageClasses">
-    <p>{{ message.message }}</p>
-    <date :datetime="message.created_at">{{ message.created }}</date>
+    <p>{{ props.message.message }}</p>
+    <date :datetime="props.message.created_at">{{ props.message.created }}</date>
   </li>
 </template>
 
-<script>
+<script setup>
+  import { defineProps, computed } from 'vue';
 
-export default {
- props: ['message'],
- computed: {
-  mssageClasses() {
-    return {
-      'my-message': this.message.isMyMessage === true
-    };
-  }
- }
-}
+  const props = defineProps(['message']);
+
+  const mssageClasses = computed(() => {
+    return { 'my-message': props.message.isMyMessage === true }
+  })
 </script>
 
 <style scoped>

@@ -30,29 +30,24 @@
   </header>
 </template>
 
-<script>
-import { mapActions, mapGetters } from 'vuex';
+<script setup>
+  import { useStore } from 'vuex';
+  import { defineProps, computed } from 'vue';
+  
+  const store = useStore();
+  const props = defineProps(['bright-mode']);
 
-  export default {
-    props: ['bright-mode'],
-    computed: {
-      ...mapGetters(['user', 'isAuth']),
-      logoSrc() {
-        return this.brightMode ? '../assets/logo.png' : '../assets/dark-logo.png';
-      },
-      brightHeader() {
-        return {
-          'bright-header': this.brightMode
-        }
-      }
-    },
-    methods: {
-      ...mapActions(['logout']),
-      logoutUser() {
-        this.logout();
-        window.location = '/';
-      }
+  const isAuth = computed(() => store.getters.isAuth);
+
+  const brightHeader = computed(() => {
+    return {
+      'bright-header': props.brightMode
     }
+  })
+
+  function logoutUser() {
+    store.dispatch('logout')
+    window.location = '/';
   }
 </script>
 

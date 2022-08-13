@@ -5,42 +5,37 @@
       <i class="fa-solid fa-circle-xmark close-icon" @click="close"></i>
     </div>
     <div class="alert-body">
-      <p>{{ message }}</p>
+      <p>{{ props.message }}</p>
     </div>
   </base-card>
 </template>
 
-<script>
-import { mapActions } from 'vuex';
+<script setup>
+import { useStore } from 'vuex';
+import { defineProps, computed, onMounted, onUnmounted } from 'vue';
 
-  export default {
-    props: ['message', 'success'],
-    data() {
-      return {
-        interval: null
-      }
-    },
-    mounted() {
-      this.interval = setInterval(() => {
-        this.clearAlertMessage();
-      }, 5000);
-    },
-    unmounted() {
-      clearInterval(this.interval);
-    },
-    computed: {
-      alertTitle() {
-        return this.success === true ? 'Action successfull' : 'Error occured';
-      }
-    },
-    methods: {
-      ...mapActions(['clearAlertMessage']),
-      close() {
-        clearInterval(this.interval);
-        this.clearAlertMessage();
-      }
-    }
-  }
+const props = defineProps(['message', 'success'])
+const store = useStore();
+
+const alertTitle = computed(() => props.success === true ? 'Action successfull' : 'Error occured')
+
+let interval = null;
+
+function close() {
+  clearInterval(interval);
+  store.dispatch('clearAlertMessage');
+}
+
+onMounted(() => {
+  interval = setInterval(() => {
+    store.dispatch('clearAlertMessage');
+  }, 5000);
+})
+
+onUnmounted(() => {
+  clearInterval(interval);
+})
+
 </script>
 
 <style scoped>

@@ -1,5 +1,5 @@
 <template>
-  <base-modal mode="small" @click="$emit('close-modal')" class="relative">
+  <base-modal mode="small" @click="emits('close-modal')" class="relative">
     <transition name="fade-in">
       <base-loader v-if="loading"></base-loader>
     </transition>
@@ -15,46 +15,40 @@
   </base-modal>
 </template>
 
-<script>
+<script setup>
 import axios from '../axios';
-import { mapActions } from 'vuex';
+import { useStore } from 'vuex';
+import { ref, defineProps, defineEmits } from 'vue';
 
-export default {
-  data() {
-    return {
-      loading: false,
-      errors: [],
-      message: ''
+const store = useStore();
+const props = defineProps(['coachId']);
+const emits = defineEmits(['close-modal']);
+
+const loading = ref(false);
+const errors = ref([]);
+const message = ref('');
+
+function sendMessage() {
+  loading.value = true;
+  errors.value = [];
+  axios.post(`/coaches/${props.coachId}/send-message`, { message: message.value })
+  .then((res) => {
+    const { success, message: responseMessage, errors: responseErrors } = res.data;
+    
+    errors.value = responseErrors ?? [];
+
+    if (success === true) {
+      store.dispatch('addSuccessMessage', responseMessage);
+      emits('close-modal');
+    } else if (success === false) {
+      store.dispatch('addErrorMessage', responseMessage); 
     }
-  },
-  props: ['coachId'],
-  emits: ["close-modal"],
-  methods: {
-    ...mapActions(['addErrorMessage', 'addSuccessMessage']),
-    sendMessage() {
-      this.loading = true;
-      this.errors = [];
-      axios.post(`/coaches/${this.coachId}/send-message`, { message: this.message })
-      .then((res) => {
-        const { success, message, errors } = res.data;
-        
-        this.errors = errors ?? [];
-
-        if (success === true) {
-          this.addSuccessMessage(message);
-          this.$emit('close-modal');
-
-        } else if (success === false) {
-          this.addErrorMessage(message);  
-        }
-      })
-      .catch(() => {
-        this.addErrorMessage('Message not sent! Try again later!')
-      })
-      .finally(() => {
-        this.loading = false;
-      })
-    }
-  }
-};
+  })
+  .catch(() => {
+    store.dispatch('addErrorMessage', 'Message not sent! Try again later!');
+  })
+  .finally(() => {
+    loading.value = false;
+  })
+}
 </script>

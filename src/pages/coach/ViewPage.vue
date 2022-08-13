@@ -38,50 +38,42 @@
   </base-container>
 </template>
 
-<script>
-  import SendMessageModal from '../../components/SendMessageModal.vue';
+<script setup>
+  import { defineProps, ref, onMounted } from 'vue';
   import axios from '../../axios';
-  import { mapActions } from 'vuex';
+  import { useStore } from 'vuex';
+  import { useRouter } from 'vue-router';
+  import SendMessageModal from '@/components/SendMessageModal.vue';
 
-  export default {
-    components: {
-      SendMessageModal
-    },
-    props: ['coachId'],
-    data() {
-      return {
-        loading: true,
-        showMessageModal: false,
-        coach: null
+  const props = defineProps(['coachId'])
+  const store = useStore();
+  const router = useRouter();
+
+  const loading = ref(false);
+  const showMessageModal = ref(false);
+  const coach = ref(null);
+
+  function loadCoach() {
+    loading.value = true;
+    axios.get(`/coaches/${props.coachId}`).then(res => {
+      const { coach: responseCoach, success, message } = res.data;
+      if (success === true) {
+        coach.value = responseCoach;
+      } else if (success === false) {
+        store.dispatch('addErrorMessage', message);
+        router.push({name: 'CoachListPage'});
       }
-    },
-    mounted() {
-      this.loadCoach();
-    },
-    methods: {
-      ...mapActions(['addErrorMessage']),
-      loadCoach() {
-        this.loading = true;
-        axios.get(`/coaches/${this.coachId}`).then(res => {
-          console.log(res)
-          const { coach, success, message } = res.data;
-          if (success === true) {
-            this.coach = coach;
-          } else if (success === false) {
-            this.addErrorMessage(message);
-            this.$router.push({name: 'CoachListPage'});
-          }
-        })
-        .catch(() => {
-          this.addErrorMessage('Couldnt find coach!');
-          this.$router.push({name: 'CoachListPage'});
-        })
-        .finally(() => {
-          this.loading = false;
-        });
-      }
-    }
+    })
+    .catch(() => {
+      store.dispatch('addErrorMessage', 'Couldnt find coach!');
+      router.push({name: 'CoachListPage'});
+    })
+    .finally(() => {
+      loading.value = false;
+    });
   }
+
+  onMounted(loadCoach);
 </script>
 
 <style scoped>

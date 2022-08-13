@@ -23,100 +23,90 @@
   </base-container>
 </template>
 
-<script>
+<script setup>
+  import { defineProps, reactive, ref, onMounted, computed, watch } from 'vue';
   import CoachItem from '../../components/CoachItem.vue';
   import axios from '../../axios';
-  import { mapGetters, mapActions } from 'vuex';
+  import { useStore } from 'vuex';
+  import { useRouter, useRoute } from 'vue-router';
   import _ from 'lodash';
 
-  export default {
-    props: ['q'],
-    data() {
-      return {
-        loading: false,
-        debounceFn: null,
-        filter: {
-          q: this.q ?? '',
-          location: this.$route.query.location ?? '',
-          name: this.$route.query.name ?? ''
-        },
-        page: this.$route.query.page ?? 1,
-        pages: 0,
+  const store = useStore();
+  const router = useRouter();
+  const route = useRoute();
+
+  const props = defineProps(['q']);
+
+  const filter = reactive({
+    q: props.q ?? '',
+    location: route.query.location ?? '',
+    name: route.query.name ?? ''
+  });
+
+  const loading = ref('');
+  const page = ref(route.query.page);
+  const pages = ref(0);
+
+  const hasFilters = computed(() => {
+    const { q, location, name } = filter;
+      
+      if (q || location || name) {
+        return true;
       }
-    },
-    created() {
-      this.loadCoaches();
-      this.debounceFn = _.debounce(this.search, 500);
-    },
-    computed: {
-      ...mapGetters(['coaches', 'isAuth']),
-      hasFilters() {
-        const { q, location, name } = this.filter;
-        
-        if (q || location || name) {
-          return true;
-        }
-        
-        return false;
-      },
-      hasMorePages() {
-        return this.pages > 1
-      }
-    },
-    methods: {
-      ...mapActions(['addCoaches']),
-      clearFilters() {
-        this.filter.q = '';
-        this.filter.location = '';
-        this.filter.name = '';
-      },
-      setPage(page) {
-        this.page = page;
-        this.search();
-      },
-      search() {
+      
+      return false;
+  })
+  const coaches = computed(() => store.getters.coaches)
+  const isAuth = computed(() => store.getters.isAuth)
+  const hasMorePages = computed(() => pages.value > 1);
 
-        if (this.filter.q) {
-          this.$router.push({ name: 'CoachQueryListPage', params: { q: this.filter.q }, query: {...this.filter, page: this.page } })
-        } else {
-          this.$router.push({ name: 'CoachListPage', query: { page: this.page }});
-        }
+  let debounceFn = _.debounce(search, 500);
 
-        this.loadCoaches();
-      },
-
-      loadCoaches() {
-        const query = {
-          ...this.filter,
-          page: this.page
-        };
-
-        this.loading = true;
-
-        axios.get('/coaches', { params: query }).then(res => {
-          const { models, meta } = res.data;
-          if (models) {
-            this.pages = meta.pages;
-            this.addCoaches(models);
-          }
-        }).finally(() => {
-          this.loading = false;
-        })
-      }
-    },
-    watch: {
-      filter: {
-        handler() {
-          this.page = 1;
-          this.debounceFn();
-        },
-        deep: true
-      }
-    },
-    components: {
-      'coach-item': CoachItem,
+  function search() {
+    if (filter.q) {
+      router.push({ name: 'CoachQueryListPage', params: { q: filter.q }, query: {...filter, page: page.value } })
+    } else {
+      router.push({ name: 'CoachListPage', query: { page: page.value }});
     }
+    loadCoaches();
   }
+  
+  function clearFilters() {
+    filter.q = '';
+    filter.location = '';
+    filter.name = '';
+  }
+
+  function setPage(newPage) {
+    page.value = newPage;
+    search();
+  }
+
+  function loadCoaches() {
+    const query = {
+      ...filter,
+      page: page.value
+    };
+
+    loading.value = true;
+
+    axios.get('/coaches', { params: query }).then(res => {
+      const { models, meta } = res.data;
+      if (models) {
+        pages.value = meta.pages;
+        store.dispatch('addCoaches', models);
+      }
+    }).finally(() => {
+      loading.value = false;
+    })
+  }
+
+  watch(filter, () => {
+    page.value = 1;
+    debounceFn();
+  }, { deep: true })
+
+  onMounted(loadCoaches);
 </script>
 
 <style scoped>

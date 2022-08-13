@@ -57,50 +57,48 @@
   </base-container>
 </template>
 
-<script>
+<script setup>
+  import { useStore } from 'vuex';
+  import { useRouter } from 'vue-router';
   import axios from '../../axios';
-  import { mapActions } from 'vuex';
+  import { ref } from 'vue';
 
-  export default {
-    data() {
-      return {
-        name: '',
-        surname: '',
-        password: '',
-        email: '',
-        confirm_password: '',
-        loading: false,
-        errors: []
-      }
-    },
-    methods: {
-      ...mapActions(['login', 'addSuccessMessage']),
-      register() {
-        const user = {
-          name: this.name,
-          surname: this.surname,
-          password: this.password,
-          email: this.email,
-          confirm_password: this.confirm_password
-        };
+  const store = useStore();
+  const router = useRouter();
 
-        this.loading = true;
-        this.errors = [];
-        axios.post('/register', user).then(response => {
-          const { success, errors, user, token } = response.data;
-          if (success === false) {
-            this.errors = errors;
-          } else {
-            this.login({user, token});
-            this.$router.push({name: 'CoachListPage'});
-            this.addSuccessMessage('Welcome to CoachFinder platform. Find your coach or become one!')
-          }
-        }).catch(err => {
-          console.log(err);
-        }).finally(() => {
-          this.loading = false
-        })
+  const name = ref('');
+  const surname = ref('');
+  const password = ref('');
+  const email = ref('');
+  const confirm_password = ref('');
+  const loading = ref(false);
+  const errors = ref([]);
+
+  function register() {
+    const user = {
+      name: name.value,
+      surname: surname.value,
+      password: password.value,
+      email: email.value,
+      confirm_password: confirm_password.value
+    };
+
+    loading.value = true;
+    errors.value = [];
+
+    axios.post('/register', user)
+    .then(response => {
+      const { success, errors: responseErrors, user, token } = response.data;
+      if (success === false) {
+        errors.value = responseErrors;
+      } else {
+        store.dispatch('login', {user, token});
+        router.push({name: 'CoachListPage'});
+        store.dispatch('addSuccessMessage', 'Welcome to CoachFinder platform. Find your coach or become one!');
       }
-    }
+    })
+    .finally(() => {
+      loading.value = false;
+    })
   }
 </script>
