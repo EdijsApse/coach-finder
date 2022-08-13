@@ -2,25 +2,22 @@
   <base-card class="p-2 relative min-h-65">
     <h3>Recent chats</h3>
     <transition name="fade-in">
-      <base-loader v-if="loading"></base-loader>
+      <base-loader v-if="props.loading"></base-loader>
     </transition>
-    <ul v-if="rooms.length">
-      <single-room class="room" v-for="room in rooms" :key="room.id" v-bind="room" @click="$emit('set-active-room', room)" :class="{'active': (activeRoom && room.id === activeRoom.id)}"></single-room>
+    <ul v-if="props.rooms.length">
+      <single-room class="room" v-for="room in props.rooms" :key="room.id" v-bind="room" @click="emits('set-active-room', room)" :class="{'active': (props.activeRoom && room.id === props.activeRoom.id)}"></single-room>
     </ul>
     <p class="no-rooms" v-else-if="!loading && rooms.length === 0">No rooms found</p>
   </base-card>
 </template>
 
-<script>
+<script setup>
+import { defineProps, defineEmits } from 'vue';
 import SingleRoom from './SingleRoom';
 
-export default {
-  props: ['loading', 'rooms', 'activeRoom'],
-  components: {
-    'single-room': SingleRoom
-  },
-  emits:['set-active-room']
-}
+const props = defineProps(['loading', 'rooms', 'activeRoom']);
+const emits = defineEmits(['set-active-room']);
+
 </script>
 
 <style scoped>
