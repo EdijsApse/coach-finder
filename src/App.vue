@@ -8,23 +8,19 @@
 
 </template>
 
-<script>
-import { mapGetters } from "vuex";
-import TheHeader from "./components/TheHeader";
-import TheAlert from "./components/TheAlert";
+<script setup>
+  import { computed } from "vue";
+  import { useStore } from "vuex";
+  import { useRoute } from "vue-router";
+  import TheHeader from "./components/TheHeader";
+  import TheAlert from "./components/TheAlert";
 
-export default {
-  computed: {
-    ...mapGetters(['alertIsSuccess', 'alertMessage']),
-    isLandingPage() {
-      return this.$route.name === 'LandingPage'
-    }
-  },
-  components: {
-    'the-header': TheHeader,
-    'the-alert': TheAlert
-  }
-};
+  const store = useStore();
+  const route = useRoute();
+  const alertIsSuccess = computed(() => store.getters.alertIsSuccess);
+  const alertMessage = computed(() => store.getters.alertMessage);
+  const isLandingPage = computed(() => route.name === 'LandingPage')
+
 </script>
 
 <style>
