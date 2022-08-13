@@ -106,9 +106,7 @@
     debounceFn();
   }, { deep: true })
 
-  onMounted(() => {
-    loadCoaches();
-  })
+  onMounted(loadCoaches);
 </script>
 
 <style scoped>
